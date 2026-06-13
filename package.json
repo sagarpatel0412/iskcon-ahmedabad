@@ -1,0 +1,20 @@
+{
+  "name": "iskcon-ahmedabad",
+  "private": true,
+  "packageManager": "pnpm@9.0.0",
+  "scripts": {
+    "dev": "turbo run dev --parallel --no-cache --filter=api --filter=web --filter=mobile",
+    "build": "turbo build",
+    "dev:api": "pnpm --filter api dev",
+    "dev:web": "pnpm --filter web dev",
+    "dev:mobile": "pnpm --filter mobile start",
+    "db:schema": "bash database/scripts/export-schema.sh",
+    "db:dump": "bash database/scripts/export-full.sh",
+    "db:all":"bash database/scripts/export-schema.sh && bash database/scripts/export-full.sh",
+    "db:restore-schema": "bash database/scripts/run-schema.sh",
+    "db:restore-full": "bash database/scripts/run-full-dump.sh"
+  },
+  "devDependencies": {
+    "turbo": "latest"
+  }
+}

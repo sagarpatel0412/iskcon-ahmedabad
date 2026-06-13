@@ -1,0 +1,32 @@
+{
+  "expo": {
+    "name": "ISKCON Ahmedabad",
+    "slug": "iskcon-ahmedabad",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/applogo2.png",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/splashimage.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.iskconahmedabad.app"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/applogo2.png",
+        "backgroundColor": "#ffffff"
+      },
+      "edgeToEdgeEnabled": true,
+      "predictiveBackGestureEnabled": false,
+      "package": "com.iskconahmedabad.app"
+    },
+    "web": {
+      "favicon": "./assets/applogo.png"
+    }
+  }
+}

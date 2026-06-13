@@ -1,0 +1,11 @@
+// src/api/donationApi.ts
+import { api } from "./client";
+
+export const createDonationOrder = (data: any) =>
+  api.post("/donations/create-order", data);
+
+export const verifyDonation = (data: any) =>
+  api.post("/donations/verify", data);
+
+export const myDonations = () =>
+  api.get("/donations/my-donations");

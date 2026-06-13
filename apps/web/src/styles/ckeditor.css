@@ -1,0 +1,15 @@
+.ck-editor__editable_inline {
+  min-height: 450px !important;
+}
+
+.ck.ck-editor__editable.ck-focused {
+  min-height: 450px !important;
+}
+
+.ck-editor-excerpt .ck-editor__editable_inline {
+  min-height: 220px !important;
+}
+
+.ck-editor-content .ck-editor__editable_inline {
+  min-height: 700px !important;
+}
