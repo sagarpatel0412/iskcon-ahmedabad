@@ -7,7 +7,6 @@ Monorepo for the ISKCON Ahmedabad platform.
 
 ## Apps
 
-```bash
 apps/
   api/      NestJS backend API
   web/      Vite React web app
