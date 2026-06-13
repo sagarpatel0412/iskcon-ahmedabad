@@ -1,3 +1,5 @@
+# ISKCON Ahmedabad Monorepo
+
 ````md
 # ISKCON Ahmedabad Monorepo
 
@@ -5,20 +7,12 @@ Monorepo for the ISKCON Ahmedabad platform.
 
 ## Apps
 
-```txt
+```bash
 apps/
   api/      NestJS backend API
   web/      Vite React web app
   mobile/   Expo React Native mobile app
 ````
-
-## Database
-
-```txt
-database/
-  dumps/      SQL dumps, ignored from Git
-  scripts/    DB export/import scripts
-```
 
 ## Install
 
@@ -137,9 +131,9 @@ pnpm --filter mobile dev
 
 ```bash
 
-## Author and Maintainer
+**Author and Maintainer**
 
-### Sagar Patel
+**Sagar Patel**
 
 Senior Software Engineer & Full Stack Developer
 
