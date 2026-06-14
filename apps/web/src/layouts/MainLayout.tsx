@@ -39,6 +39,7 @@ import { getToken, logout } from "../services/authService";
 import useAuth from "../hooks/useAuth";
 import { PremiumBadge } from "../components/premium-badge/PremiumBadge";
 import { useState } from "react";
+import { MdMoney } from "react-icons/md";
 
 export default function MainLayout() {
   return (
@@ -313,143 +314,6 @@ function Header() {
   ].filter((group) => group.items && group.items.length > 0);
 
   return (
-    // <header className="sticky top-0 z-50 border-b border-[#e8d5b0] bg-[#fdfaf5]/95 backdrop-blur-sm">
-    //   <div className="mx-auto flex max-w-[1800px] items-center justify-between px-6 py-3">
-    //     <Link to="/" className="group flex items-center gap-3">
-    //       <div className="h-12 w-12 overflow-hidden rounded-full border-2 border-[#c8902a] p-0.5">
-    //         <img
-    //           src="https://iskconahmedabad.com/images/logo.png"
-    //           alt="ISKCON Ahmedabad"
-    //           className="h-full w-full rounded-full object-cover"
-    //         />
-    //       </div>
-
-    //       <div>
-    //         <h1 className="text-base font-bold leading-tight tracking-wide text-[#1a0a00] transition-colors group-hover:text-[#c8902a]">
-    //           ISKCON Ahmedabad
-    //         </h1>
-    //         <p className="text-[10px] uppercase tracking-[0.15em] text-[#8b6914]">
-    //           Hare Krishna &nbsp; {user?.isSubscribed && <PremiumBadge />}
-    //         </p>
-    //       </div>
-    //     </Link>
-
-    //     <nav className="hidden items-center gap-1 xl:flex">
-    //       {isLoggedIn && !loading && (
-    //         <>
-    //           <NavItem to="/donate" label="Donations" icon={LayoutDashboard} />
-    //           <NavItem
-    //             to="/dashboard"
-    //             label="Dashboard"
-    //             icon={LayoutDashboard}
-    //           />
-    //           <Dropdown label="Events" icon={CalendarDays} links={eventLinks} />
-    //           <Dropdown label="Trips" icon={MapPin} links={tripsLinks} />
-    //           <Dropdown label="Courses" icon={BookOpen} links={courseLinks} />
-    //         </>
-    //       )}
-
-    //       {!isLoggedIn && !loading && (
-    //         <>
-    //           <NavItem
-    //             to="/dashboard"
-    //             label="Dashboard"
-    //             icon={LayoutDashboard}
-    //           />
-    //           <NavItem to="/donate" label="Donations" icon={LayoutDashboard} />
-    //           <Dropdown label="Events" icon={CalendarDays} links={eventLinks} />
-    //           <Dropdown label="Content" icon={BookOpen} links={contentLinks} />
-
-    //           <Dropdown
-    //             label="About"
-    //             icon={Info}
-    //             links={[
-    //               {
-    //                 to: "/about",
-    //                 label: "About ISKCON Ahmedabad",
-    //                 icon: Landmark,
-    //               },
-    //               {
-    //                 to: "/about/prabhupada",
-    //                 label: "About Srila Prabhupada",
-    //                 icon: ScrollText,
-    //               },
-    //             ]}
-    //           />
-    //         </>
-    //       )}
-
-    //       {isLoggedIn && !loading && contentLinks.length > 0 && (
-    //         <Dropdown label="Content" icon={BookOpen} links={contentLinks} />
-    //       )}
-
-    //       {isLoggedIn && !loading && progresLink.length > 0 && (
-    //         <>
-    //           <Dropdown label="Progress" icon={Activity} links={progresLink} />
-
-    //           <Dropdown
-    //             label="About"
-    //             icon={Info}
-    //             links={[
-    //               {
-    //                 to: "/about",
-    //                 label: "About ISKCON Ahmedabad",
-    //                 icon: Landmark,
-    //               },
-    //               {
-    //                 to: "/about/prabhupada",
-    //                 label: "About Srila Prabhupada",
-    //                 icon: ScrollText,
-    //               },
-    //             ]}
-    //           />
-    //         </>
-    //       )}
-    //     </nav>
-
-    //     <div className="flex items-center gap-2">
-    //       {!isLoggedIn ? (
-    //         <>
-    //           <button
-    //             onClick={() => navigate("/login")}
-    //             className="flex items-center gap-2 rounded-lg border border-[#e8d5b0] bg-white px-3 py-2 text-sm font-medium text-[#3d2200] hover:border-[#c8902a] hover:text-[#c8902a]"
-    //           >
-    //             <LogIn className="h-4 w-4" />
-    //             Login
-    //           </button>
-
-    //           <button
-    //             onClick={() => navigate("/register/seeker")}
-    //             className="flex items-center gap-2 rounded-lg bg-[#1a0a00] px-4 py-2 text-sm font-medium text-[#d4a853] hover:bg-[#c8902a] hover:text-white"
-    //           >
-    //             <UserPlus className="h-4 w-4" />
-    //             Register
-    //           </button>
-    //         </>
-    //       ) : (
-    //         <>
-    //           <button
-    //             onClick={() => navigate("/profile")}
-    //             className="flex items-center gap-2 rounded-lg border border-[#e8d5b0] bg-white px-3 py-2 text-sm font-medium text-[#3d2200] hover:border-[#c8902a] hover:text-[#c8902a]"
-    //           >
-    //             <UserRound className="h-4 w-4" />
-    //             <span className="hidden sm:inline">Profile</span>
-    //           </button>
-
-    //           <button
-    //             onClick={handleLogout}
-    //             className="flex items-center gap-2 rounded-lg bg-[#1a0a00] px-4 py-2 text-sm font-medium text-[#d4a853] hover:bg-[#c8902a] hover:text-white"
-    //           >
-    //             <LogOut className="h-4 w-4" />
-    //             Logout
-    //           </button>
-    //         </>
-    //       )}
-    //     </div>
-    //   </div>
-
-    //   <div className="h-0.5 w-full bg-gradient-to-r from-transparent via-[#c8902a] to-transparent opacity-40" />
-    // </header>
     <header className="sticky top-0 z-50 border-b border-[#e8d5b0] bg-[#fdfaf5]/95 backdrop-blur-sm">
       <div className="mx-auto flex max-w-[1800px] items-center justify-between px-4 py-3 md:px-6">
         <Link to="/" className="group flex items-center gap-3">
@@ -473,6 +337,7 @@ function Header() {
         </Link>
 
         <nav className="hidden items-center gap-1 xl:flex">
+          {loading && <p>Loading dynamic header...</p>}
           {isAdmin && (
             <>
               <NavItem
@@ -501,10 +366,12 @@ function Header() {
                 label="Dashboard"
                 icon={LayoutDashboard}
               />
+              <NavItem to="/get-app" label="Get App" icon={Smartphone} />
+
               <NavItem
-                to="/get-app"
-                label="Get App"
-                icon={Smartphone}
+                to="/content/subscriptions"
+                label="Content Pricing"
+                icon={MdMoney}
               />
 
               <MegaDropdown
@@ -517,11 +384,7 @@ function Header() {
 
           {!isLoggedIn && !loading && (
             <>
-              <NavItem
-                to="/get-app"
-                label="Get App"
-                icon={Smartphone}
-              />
+              <NavItem to="/get-app" label="Get App" icon={Smartphone} />
               <MegaDropdown
                 label="Explore"
                 icon={BookOpen}
