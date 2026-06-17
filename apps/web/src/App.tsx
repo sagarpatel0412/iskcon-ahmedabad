@@ -73,6 +73,7 @@ import InstagramFeedPage from "./pages/instagram-feed/InstagramFeedPage";
 import CentresPage from "./pages/centres/CentresPage";
 import AdminCentrePage from "./pages/admin/AdminCentrePage";
 import AboutKrishnaChaitanyaPage from "./pages/about/AboutKrishnaChaitanyaPage";
+import KrishnaGalleryPage from "./pages/gallery/GalleryPage";
 
 export default function App() {
   return (
@@ -104,6 +105,7 @@ export default function App() {
           <Route path="/get-app" element={<GetAppPage />} />
           <Route path="/social-feed" element={<InstagramFeedPage />} />
           <Route path="/centres" element={<CentresPage />} />
+          <Route path="/gallery" element={<KrishnaGalleryPage />} />
              
           <Route path="/not-found" element={<NotFoundPage />} />
           <Route path="*" element={<Navigate to="/not-found" />} />

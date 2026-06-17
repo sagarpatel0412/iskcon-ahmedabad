@@ -17,6 +17,7 @@ import {
   ArrowRight,
 } from "lucide-react";
 import panchtattva from '../../assets/pancha-tattva.jpeg'
+import KrishnaGallerySection from "./KrishnaGallerySection";
 
 const AARTI_SCHEDULE = [
   { title: "Mangla Aarti", time: "04:30 AM", minutes: 4 * 60 + 30 },
@@ -499,6 +500,7 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+      <KrishnaGallerySection/>
     </div>
   );
 }

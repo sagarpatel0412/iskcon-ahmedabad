@@ -1,6 +1,8 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { execFile } from 'child_process';
+import type { Request } from 'express';
 import * as path from 'path';
+import * as fs from 'fs';
 
 @Injectable()
 export class AppService {
@@ -96,5 +98,42 @@ export class AppService {
         },
       );
     });
+  }
+
+  public async getImages(req: Request) {
+    const uploadsPath = path.join(process.cwd(), 'uploads', 'krishna-images');
+
+    const files = fs
+      .readdirSync(uploadsPath)
+      .filter((file) => /\.(jpg|jpeg|png|webp|gif|avif)$/i.test(file))
+      .sort();
+
+    const baseUrl = `${req.protocol}://${req.get('host')}`;
+
+    return {
+      data: files.map((file) => {
+        return { image: `${baseUrl}/uploads/krishna-images/${file}` };
+      }),
+    };
+  }
+
+  public async getRecommendedImages(req: Request) {
+    const uploadsPath = path.join(process.cwd(), 'uploads', 'krishna-images');
+
+    const files = fs
+      .readdirSync(uploadsPath)
+      .filter((file) => /\.(jpg|jpeg|png|webp|gif|avif)$/i.test(file));
+
+    const baseUrl = `${req.protocol}://${req.get('host')}`;
+
+    const shuffled = [...files].sort(() => Math.random() - 0.5);
+
+    const selected = shuffled.slice(0, 4);
+
+    return {
+      data: selected.map((file) => ({
+        image: `${baseUrl}/uploads/krishna-images/${file}`,
+      })),
+    };
   }
 }
