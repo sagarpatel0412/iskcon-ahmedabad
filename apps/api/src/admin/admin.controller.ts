@@ -18,6 +18,8 @@ import { AuthTokenGuard } from '../auth/guards/auth-token.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { RefundCoursePaymentDto } from 'src/courses/dto/refund-course-payment.dto';
+import { AdminCreateCentreDto } from './dto/admin-create-centre.dto';
+import { AdminUpdateCentreDto } from './dto/admin-update-centre.dto';
 
 @Controller('meta-idx')
 @UseGuards(AuthTokenGuard, RolesGuard)
@@ -185,5 +187,32 @@ export class AdminController {
   @Delete('trips/:uuid')
   deleteTrip(@Param('uuid') uuid: string) {
     return this.adminService.deleteTrip(uuid);
+  }
+
+  @Post('centres')
+  create(
+    @Body()
+    createCentreDto: AdminCreateCentreDto,
+  ) {
+    return this.adminService.createAdminCentre(createCentreDto);
+  }
+
+  @Patch('centres/:id')
+  update(
+    @Param('id')
+    id: string,
+
+    @Body()
+    updateCentreDto: AdminUpdateCentreDto,
+  ) {
+    return this.adminService.updateAdminCentre(Number(id), updateCentreDto);
+  }
+
+  @Delete('centres/:id')
+  remove(
+    @Param('id')
+    id: string,
+  ) {
+    return this.adminService.removeAdminCentre(Number(id));
   }
 }

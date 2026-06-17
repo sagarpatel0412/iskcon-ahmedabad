@@ -13,6 +13,7 @@ import {
   HeartHandshake,
   UserCheck,
 } from "lucide-react";
+import { MdTempleBuddhist } from "react-icons/md";
 
 const links = [
   { to: "/meta-idx", label: "Dashboard", icon: LayoutDashboard },
@@ -25,6 +26,7 @@ const links = [
   { to: "/meta-idx/payments", label: "Payments", icon: CreditCard },
   { to: "/meta-idx/subscriptions", label: "Subscriptions", icon: Crown },
   { to: "/meta-idx/donations", label: "Donations", icon: HeartHandshake },
+  { to: "/meta-idx/centres", label: "Centres", icon: MdTempleBuddhist },
 ];
 
 export default function AdminLayout() {

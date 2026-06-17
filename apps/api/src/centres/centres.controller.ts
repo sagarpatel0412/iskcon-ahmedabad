@@ -18,13 +18,13 @@ export class CentresController {
     private readonly centresService: CentresService,
   ) {}
 
-  @Post()
-  create(
-    @Body()
-    createCentreDto: CreateCentreDto,
-  ) {
-    return this.centresService.create(createCentreDto);
-  }
+  // @Post()
+  // create(
+  //   @Body()
+  //   createCentreDto: CreateCentreDto,
+  // ) {
+  //   return this.centresService.create(createCentreDto);
+  // }
 
   @Get()
   findAll() {

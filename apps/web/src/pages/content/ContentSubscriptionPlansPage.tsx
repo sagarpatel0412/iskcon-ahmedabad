@@ -8,6 +8,7 @@ import {
   verifySubscriptionPayment,
 } from "../../services/contentPaymentService";
 import { getMySubscription } from "../../services/contentPaymentService";
+import AppLoader from "../../components/common/AppLoader";
 
 type SubscriptionPlan = {
   id: number;
@@ -145,12 +146,10 @@ export default function ContentSubscriptionPlansPage() {
 
   if (loading) {
     return (
-      <div className="flex min-h-[70vh] items-center justify-center">
-        <div className="flex items-center gap-3 text-orange-700">
-          <Loader2 className="h-6 w-6 animate-spin" />
-          <span className="font-semibold">Loading subscription plans...</span>
-        </div>
-      </div>
+      <AppLoader
+        title="Loading Content Subscriptions"
+        subtitle="Fetching spiritual wisdom..."
+      />
     );
   }
 
@@ -192,9 +191,10 @@ export default function ContentSubscriptionPlansPage() {
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {plans.map((plan) => {
               const isCurrentPlan =
-                activeSubscription?.plan_name === plan.name ||
-                activeSubscription?.plan_type === plan.billing_type;
-
+                activeSubscription.active !== false
+                  ? activeSubscription?.plan_name === plan.name ||
+                    activeSubscription?.plan_type === plan.billing_type
+                  : false;
               return (
                 <div
                   key={plan.uuid || plan.id}
@@ -209,7 +209,7 @@ export default function ContentSubscriptionPlansPage() {
                       Current Plan
                     </div>
                   )}
-                  <br/>
+                  <br />
 
                   <div className="mb-5 flex items-start justify-between gap-4">
                     <div className="pr-20">
@@ -316,16 +316,18 @@ export default function ContentSubscriptionPlansPage() {
 
                   <button
                     onClick={() => handleSubscribe(plan)}
-                    disabled={buyingPlanId === plan.id || !!activeSubscription}
+                    disabled={
+                      buyingPlanId === plan.id || !!activeSubscription?.active
+                    }
                     className={`w-full rounded-full px-5 py-3 font-bold transition disabled:cursor-not-allowed ${
-                      activeSubscription
+                      activeSubscription?.active
                         ? isCurrentPlan
                           ? "bg-green-600 text-white"
                           : "bg-slate-100 text-slate-500"
                         : "bg-orange-600 text-white hover:bg-orange-700 disabled:opacity-70"
                     }`}
                   >
-                    {activeSubscription ? (
+                    {activeSubscription?.active ? (
                       isCurrentPlan ? (
                         "Your Active Plan"
                       ) : (

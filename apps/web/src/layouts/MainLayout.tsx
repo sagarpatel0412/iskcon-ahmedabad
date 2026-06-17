@@ -33,6 +33,7 @@ import {
   MessageSquareWarning,
   LifeBuoy,
   Smartphone,
+  LocateIcon,
 } from "lucide-react";
 
 import { getToken, logout } from "../services/authService";
@@ -305,6 +306,11 @@ function Header() {
           label: "About Srila Prabhupada",
           icon: ScrollText,
         },
+        {
+          to:"/about/about-glory-of-krishna-and-chaitanya-mahaprabhu",
+          label: "Glory of Krishna and Chaitanya Mahaprabhu",
+          icon: ScrollText,
+        }
       ],
     },
     {
@@ -366,6 +372,7 @@ function Header() {
                 label="Dashboard"
                 icon={LayoutDashboard}
               />
+              <NavItem to="/centres" label="Centres" icon={LocateIcon} />
               <NavItem to="/get-app" label="Get App" icon={Smartphone} />
 
               <NavItem
@@ -385,6 +392,7 @@ function Header() {
           {!isLoggedIn && !loading && (
             <>
               <NavItem to="/get-app" label="Get App" icon={Smartphone} />
+              <NavItem to="/centres" label="Centres" icon={LocateIcon} />
               <MegaDropdown
                 label="Explore"
                 icon={BookOpen}

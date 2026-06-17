@@ -58,22 +58,74 @@ export default function GetAppPage() {
             <div className="relative">
               <div className="absolute -left-10 -top-10 h-40 w-40 rounded-full bg-[#f5e8c8]" />
               <div className="absolute -bottom-10 -right-10 h-40 w-40 rounded-full bg-[#f5e8c8]" />
+              <div className="relative flex h-[640px] w-[320px] overflow-hidden rounded-[3rem] border-[10px] border-[#1a0a00] bg-[#fdfaf5] shadow-2xl">
+                <div className="h-full w-full overflow-hidden">
+                  {/* Mobile Hero */}
+                  <div className="bg-[#1a0a00] px-5 pb-9 pt-12 text-center">
+                    <img
+                      src="https://iskconahmedabad.com/images/logo.png"
+                      alt="ISKCON Ahmedabad"
+                      className="mx-auto h-[92px] w-[92px] rounded-full border-4 border-[#c8902a] bg-white object-contain"
+                    />
 
-              <div className="relative flex h-[600px] w-[300px] items-center justify-center rounded-[3rem] border-[10px] border-[#1a0a00] bg-white shadow-2xl">
-                <div className="text-center">
-                  <Download className="mx-auto h-16 w-16 text-[#c8902a]" />
+                    <p className="mt-4 text-[10px] font-black uppercase tracking-[0.25em] text-[#d4a853]">
+                      ISKCON Ahmedabad
+                    </p>
 
-                  <h3 className="mt-4 text-2xl font-black text-[#1a0a00]">
-                    Krishna App
-                  </h3>
+                    <h3 className="mt-2 text-3xl font-black text-white">
+                      Welcome Back
+                    </h3>
 
-                  <p className="mt-2 font-bold text-[#5c3d1a]">
-                    ISKCON Ahmedabad
-                  </p>
+                    <p className="mt-2 text-sm font-bold leading-5 text-[#f5e8c8]">
+                      Login to continue your Krishna consciousness journey.
+                    </p>
+                  </div>
 
-                  <p className="mt-5 text-sm font-bold text-[#9a7a4a]">
-                    Mobile Preview Coming Soon
-                  </p>
+                  {/* Mobile Content */}
+                  <div className="p-4">
+                    <div className="rounded-[28px] border border-[#ede0c8] bg-white p-4 shadow-lg">
+                      <h4 className="mb-4 text-2xl font-black text-[#1a0a00]">
+                        Login
+                      </h4>
+
+                      <div className="mb-4">
+                        <p className="mb-2 text-sm font-black text-[#5c3d1a]">
+                          Email Address *
+                        </p>
+                        <div className="rounded-[18px] border border-[#ede0c8] bg-[#fdfaf5] px-4 py-4 text-sm font-bold text-[#1a0a00]">
+                          sagar@test.com
+                        </div>
+                      </div>
+
+                      <div className="mb-4">
+                        <p className="mb-2 text-sm font-black text-[#5c3d1a]">
+                          Password
+                        </p>
+                        <div className="rounded-[18px] border border-[#ede0c8] bg-[#fdfaf5] px-4 py-4 text-sm font-bold text-[#1a0a00]">
+                          ••••••
+                        </div>
+                      </div>
+
+                      <div className="mt-5 rounded-[20px] bg-[#c8902a] py-4 text-center text-base font-black text-[#1a0a00] shadow-lg">
+                        Login with OTP
+                      </div>
+
+                      <p className="mt-5 text-center text-sm font-black text-[#8b6914]">
+                        New seeker? Register here
+                      </p>
+                    </div>
+
+                    <div className="mt-4 rounded-[28px] bg-[#1a0a00] p-5">
+                      <h4 className="text-xl font-black text-white">
+                        Hare Krishna 🙏
+                      </h4>
+
+                      <p className="mt-2 text-sm font-bold leading-5 text-[#d4a853]">
+                        Access events, yatras, courses, journals, newsletters,
+                        progress tracking and seva opportunities from one app.
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

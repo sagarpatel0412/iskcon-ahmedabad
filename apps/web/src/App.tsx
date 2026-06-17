@@ -70,6 +70,9 @@ import ReportProblemPage from "./pages/support/ReportProblemPage";
 import ContactPage from "./pages/support/ContactPage";
 import GetAppPage from "./pages/get-app/GetAppPage";
 import InstagramFeedPage from "./pages/instagram-feed/InstagramFeedPage";
+import CentresPage from "./pages/centres/CentresPage";
+import AdminCentrePage from "./pages/admin/AdminCentrePage";
+import AboutKrishnaChaitanyaPage from "./pages/about/AboutKrishnaChaitanyaPage";
 
 export default function App() {
   return (
@@ -82,6 +85,7 @@ export default function App() {
           <Route path="/verify-otp" element={<VerifyOtpPage />} />
           <Route path="/about" element={<AboutIskconAhmedabadPage />} />
           <Route path="/about/prabhupada" element={<AboutPrabhupadaPage />} />
+          <Route path="/about/about-glory-of-krishna-and-chaitanya-mahaprabhu" element={<AboutKrishnaChaitanyaPage />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/reset-password" element={<ResetPasswordPage />} />
           <Route path="/festivals" element={<FestivalCalendarPage />} />
@@ -99,6 +103,7 @@ export default function App() {
           <Route path="/report-problem" element={<ReportProblemPage />} />
           <Route path="/get-app" element={<GetAppPage />} />
           <Route path="/social-feed" element={<InstagramFeedPage />} />
+          <Route path="/centres" element={<CentresPage />} />
              
           <Route path="/not-found" element={<NotFoundPage />} />
           <Route path="*" element={<Navigate to="/not-found" />} />
@@ -126,6 +131,7 @@ export default function App() {
                 element={<AdminSubscriptionsPage />}
               />
               <Route path="donations" element={<AdminDonationsPage />} />
+              <Route path="centres" element={<AdminCentrePage />} />
             </Route>
           </Route>
         </Route>

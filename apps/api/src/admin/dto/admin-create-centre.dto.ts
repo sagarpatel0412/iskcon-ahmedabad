@@ -9,7 +9,7 @@ import {
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
-export class CreateCentreDto {
+export class AdminCreateCentreDto {
   @IsString()
   @MaxLength(255)
   name!: string;

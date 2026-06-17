@@ -51,6 +51,19 @@ export class Centre extends Model<Centre> {
   @Column({ type: DataType.BOOLEAN, defaultValue: true })
   is_active!: boolean;
 
+  @Column({ type: DataType.DECIMAL(10, 8), allowNull: true })
+  latitude!: number;
+
+  @Column({ type: DataType.DECIMAL(11, 8), allowNull: true })
+  longitude!: number;
+
+  @Column({
+    type: DataType.BOOLEAN,
+    allowNull: false,
+    defaultValue: false
+  })
+  is_mother_temple!: boolean;
+
   @HasMany(() => User)
   users!: User[];
 }

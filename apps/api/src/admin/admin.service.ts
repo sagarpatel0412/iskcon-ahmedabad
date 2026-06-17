@@ -25,6 +25,9 @@ import { ContentService } from 'src/content/content.service';
 import { TripsService } from 'src/trips/trips.service';
 import { CoursesService } from 'src/courses/courses.service';
 import { Event } from 'src/events/event.model';
+import { AdminCreateCentreDto } from './dto/admin-create-centre.dto';
+import { AdminUpdateCentreDto } from './dto/admin-update-centre.dto';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class AdminService {
@@ -49,6 +52,8 @@ export class AdminService {
     @InjectModel(ContentSubscription)
     private readonly subscriptionModel: typeof ContentSubscription,
     @InjectModel(Donation) private readonly donationModel: typeof Donation,
+    @InjectModel(Centre)
+    private readonly centreModel: typeof Centre,
 
     private readonly contentService: ContentService,
     private readonly tripsService: TripsService,
@@ -459,6 +464,38 @@ export class AdminService {
 
     return {
       message: 'Trip deleted successfully',
+    };
+  }
+
+  async createAdminCentre(createCentreDto: AdminCreateCentreDto) {
+    return this.centreModel.create({uuid: uuidv4(),...createCentreDto as any});
+  }
+
+  async findAdminCentreOne(id: number) {
+    const centre = await this.centreModel.findByPk(id);
+
+    if (!centre) {
+      throw new NotFoundException('Centre not found');
+    }
+
+    return centre;
+  }
+
+  async updateAdminCentre(id: number, updateCentreDto: AdminUpdateCentreDto) {
+    const centre = await this.findAdminCentreOne(id);
+
+    await centre.update(updateCentreDto);
+
+    return centre;
+  }
+
+  async removeAdminCentre(id: number) {
+    const centre = await this.findAdminCentreOne(id);
+
+    await centre.destroy();
+
+    return {
+      message: 'Centre deleted successfully',
     };
   }
 }
