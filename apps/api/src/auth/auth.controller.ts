@@ -1,8 +1,8 @@
-import { Body, Controller, Headers, Post, Req } from '@nestjs/common';
+import { Body, Controller, Headers, Post, Req, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
-import type { Request } from 'express';
+import type { Request, Response } from 'express';
 import { SendOtpDto } from './dto/send-otp.dto';
 import { VerifyOtpDto } from './dto/verify-otp.dto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
@@ -18,13 +18,21 @@ export class AuthController {
   }
 
   @Post('login')
-  login(@Body() dto: LoginDto, @Req() req: Request) {
-    return this.authService.login(dto, req);
+  login(
+    @Body() dto: LoginDto,
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    return this.authService.login(dto, req, res);
   }
 
   @Post('logout')
-  logout(@Headers('authorization') authorization: string) {
-    return this.authService.logout(authorization);
+  logout(
+    @Headers('authorization') authorization: string,
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    return this.authService.logout(authorization, req, res);
   }
 
   @Post('send-otp')
@@ -33,8 +41,12 @@ export class AuthController {
   }
 
   @Post('verify-otp')
-  verifyOtp(@Body() dto: VerifyOtpDto, @Req() req: Request) {
-    return this.authService.verifyOtp(dto, req);
+  verifyOtp(
+    @Body() dto: VerifyOtpDto,
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    return this.authService.verifyOtp(dto, req, res);
   }
 
   @Post('forgot-password')

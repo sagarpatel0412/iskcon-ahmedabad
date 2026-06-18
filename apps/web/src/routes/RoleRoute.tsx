@@ -1,6 +1,5 @@
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
-import { getToken } from "../services/authService";
 import AppLoader from "../components/common/AppLoader";
 
 export default function RoleRoute({
@@ -9,12 +8,8 @@ export default function RoleRoute({
   allowedRoles: string[];
 }) {
   const location = useLocation();
-  const token = getToken();
-  const { loading, roles } = useAuth();
 
-  if (!token) {
-    return <Navigate to="/login" replace state={{ from: location }} />;
-  }
+  const { user, loading, roles } = useAuth();
 
   if (loading) {
     return (
@@ -23,6 +18,10 @@ export default function RoleRoute({
         subtitle="Fetching spiritual wisdom..."
       />
     );
+  }
+
+  if (!user) {
+    return <Navigate to="/login" replace state={{ from: location }} />;
   }
 
   const hasAccess = allowedRoles.some((role) => roles.includes(role));

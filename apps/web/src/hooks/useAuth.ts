@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { api } from "../api/client";
-import { getToken, logout, saveUser } from "../services/authService";
+import { logout } from "../services/authService";
 
 export default function useAuth() {
   const [user, setUser] = useState<any>(null);
@@ -8,18 +8,10 @@ export default function useAuth() {
 
   const fetchMe = async () => {
     try {
-      const token = getToken();
-
-      if (!token) {
-        setUser(null);
-        return;
-      }
-
+      setLoading(true);
       const res = await api.get("/users/me");
       setUser(res.data);
-      saveUser(res.data);
     } catch {
-      logout();
       setUser(null);
     } finally {
       setLoading(false);
@@ -28,9 +20,28 @@ export default function useAuth() {
 
   useEffect(() => {
     fetchMe();
+
+    const handleAuthChange = () => {
+      fetchMe();
+    };
+
+    window.addEventListener("auth-changed", handleAuthChange);
+
+    return () => {
+      window.removeEventListener("auth-changed", handleAuthChange);
+    };
   }, []);
 
-  const roles = user?.user_roles?.map((ur: any) => ur.role?.name) || [];
+  const handleLogout = async () => {
+    await logout();
+    setUser(null);
+    window.dispatchEvent(new Event("auth-changed"));
+  };
+
+  const roles =
+    user?.user_roles
+      ?.map((ur: any) => ur?.role?.name)
+      .filter(Boolean) || [];
 
   return {
     user,
@@ -41,6 +52,7 @@ export default function useAuth() {
     isDevotee: roles.includes("DEVOTEE"),
     isAdmin: roles.includes("ADMIN"),
     isSuperAdmin: roles.includes("SUPER_ADMIN"),
+    logout: handleLogout,
     refetch: fetchMe,
   };
 }

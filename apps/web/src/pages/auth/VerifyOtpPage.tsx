@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { api } from "../../api/client";
-import { saveToken, saveUser } from "../../services/authService";
 
 export default function VerifyOtpPage() {
   const navigate = useNavigate();
@@ -16,11 +15,15 @@ export default function VerifyOtpPage() {
     try {
       setLoading(true);
 
-      const verifyRes = await api.post("/auth/verify-otp", {
-        email,
+      await api.post("/auth/verify-otp", {
+        email: email?.trim().toLowerCase(),
         otp,
         purpose: mode === "devotee_register" ? "register" : mode,
+        device_type: "web",
+        device_name: navigator.userAgent,
       });
+
+      window.dispatchEvent(new Event("auth-changed"));
 
       if (mode === "register") {
         await api.post("/auth/register", registerData);
@@ -35,27 +38,12 @@ export default function VerifyOtpPage() {
       }
 
       if (mode === "login") {
-        const token = verifyRes.data.token;
-
-        if (token) {
-          saveToken(token);
-          saveUser(verifyRes.data.user);
-          navigate("/", { replace: true });
-          return;
-        }
-
-        const loginRes = await api.post("/auth/login", {
-          email,
-          password,
-          device_type: "web",
-          device_name: "Browser",
-        });
-
-        saveToken(loginRes.data.token);
-        saveUser(loginRes.data.user);
-
+        window.dispatchEvent(new Event("auth-changed"));
         navigate("/", { replace: true });
+        return;
       }
+    } catch (error: any) {
+      alert(error?.response?.data?.message || "OTP verification failed");
     } finally {
       setLoading(false);
     }
@@ -65,10 +53,10 @@ export default function VerifyOtpPage() {
     <div className="flex min-h-screen items-center justify-center bg-[#fdfaf5] px-5">
       <div className="w-full max-w-md rounded-3xl border border-blue-100 bg-white p-8 shadow-xl">
         <img
-            src="https://iskconahmedabad.com/images/logo.png"
-            className="mx-auto h-20 w-20 object-contain"
+          src="https://iskconahmedabad.com/images/logo.png"
+          className="mx-auto h-20 w-20 object-contain"
         />
-        <br/>
+        <br />
         <h1 className="text-center text-3xl font-black text-slate-900">
           Verify OTP
         </h1>

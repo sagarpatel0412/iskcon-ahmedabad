@@ -10,6 +10,7 @@ import AppLoader from "../../components/common/AppLoader";
 import { useNavigate } from "react-router-dom";
 import jsPDF from "jspdf";
 import iskconlogo from "../../assets/iskconlogo.png";
+import PageSeo from "../../components/seo/PageSeo";
 
 declare global {
   interface Window {
@@ -267,192 +268,202 @@ export default function DonatePage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#fdfaf5]">
-      <section className="bg-[#1a0a00] px-5 py-20 text-center">
-        <Heart className="mx-auto text-[#d4a853]" size={60} />
+    <>
+      <PageSeo
+        title="Donations | ISKCON Ahmedabad"
+        description="Donate to support Krishna Consciousness"
+      />
 
-        <h1 className="mt-5 font-serif text-6xl font-black text-white">
-          Donate
-        </h1>
+      <div className="min-h-screen bg-[#fdfaf5]">
+        <section className="bg-[#1a0a00] px-5 py-20 text-center">
+          <Heart className="mx-auto text-[#d4a853]" size={60} />
 
-        <p className="mt-3 text-[#d4a853]">Support Krishna Consciousness</p>
-      </section>
+          <h1 className="mt-5 font-serif text-6xl font-black text-white">
+            Donate
+          </h1>
 
-      <div className="mx-auto max-w-6xl px-5 py-16">
-        <div className="grid gap-8 lg:grid-cols-[1fr_360px]">
-          <div className="rounded-3xl border bg-white p-8">
-            <h2 className="font-serif text-4xl font-black">Donation Details</h2>
+          <p className="mt-3 text-[#d4a853]">Support Krishna Consciousness</p>
+        </section>
 
-            <div className="mt-6 grid gap-5">
-              <Input
-                label="Donor Name"
-                value={form.donor_name}
-                onChange={(v: any) => update("donor_name", v)}
-              />
-
-              <Input
-                label="Email"
-                value={form.donor_email}
-                onChange={(v: any) => update("donor_email", v)}
-              />
-
-              <Input
-                label="Phone"
-                value={form.donor_phone}
-                onChange={(v: any) => update("donor_phone", v)}
-              />
-
-              <div>
-                <label className="text-sm font-black">Seva</label>
-
-                <select
-                  value={form.seva_type}
-                  onChange={(e) => update("seva_type", e.target.value)}
-                  className="mt-2 w-full rounded-xl border p-4"
-                >
-                  <option value="nitya_seva">Nitya Seva</option>
-
-                  <option value="gau_seva">Gau Seva</option>
-
-                  <option value="khichdi_seva">Khichdi Seva</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="text-sm font-black">Amount</label>
-
-                <div className="mt-3 grid grid-cols-3 gap-3">
-                  {[108, 501, 1008, 2100, 5100, 11000].map((value) => (
-                    <button
-                      key={value}
-                      onClick={() => setAmount(value)}
-                      className={`rounded-xl p-4 font-black ${
-                        amount === value ? "bg-[#c8902a]" : "border"
-                      }`}
-                    >
-                      ₹{value}
-                    </button>
-                  ))}
-                </div>
-
-                <div className="mt-4 flex items-center rounded-xl border px-4">
-                  <IndianRupee size={20} />
-
-                  <input
-                    type="number"
-                    value={amount}
-                    onChange={(e) => setAmount(Number(e.target.value))}
-                    className="w-full p-4 outline-none"
-                  />
-                </div>
-              </div>
-
-              <label className="flex gap-3">
-                <input
-                  type="checkbox"
-                  checked={form.is_anonymous}
-                  onChange={(e) => update("is_anonymous", e.target.checked)}
-                />
-                Donate anonymously
-              </label>
-
-              <button
-                disabled={loading}
-                onClick={() => {
-                  isLoggedIn ? donate() : navigate("/login");
-                }}
-                className="rounded-2xl bg-[#c8902a] py-4 text-lg font-black"
-              >
-                {isLoggedIn
-                  ? loading
-                    ? "Processing..."
-                    : `Donate ₹${amount}`
-                  : "Login to Donate ..."}
-              </button>
-
-              {receiptData && (
-                <div className="rounded-2xl border border-green-200 bg-green-50 p-5">
-                  <h3 className="text-xl font-black text-green-800">
-                    Donation Successful 🙏
-                  </h3>
-
-                  <p className="mt-1 text-sm font-bold text-green-700">
-                    Your receipt is ready to download.
-                  </p>
-
-                  <button
-                    onClick={() => generateDonationReceiptPdf(receiptData)}
-                    className="mt-4 w-full rounded-2xl bg-green-700 py-3 font-black text-white"
-                  >
-                    Download Donation Receipt PDF
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
-
-          <aside className="space-y-5">
-            <div className="rounded-3xl bg-[#1a0a00] p-6 text-white">
-              <Sparkles className="text-[#d4a853]" />
-
-              <h3 className="mt-4 text-3xl font-black">Seva Opportunities</h3>
-
-              <ul className="mt-4 space-y-3 text-sm">
-                <li>🙏 Nitya Seva</li>
-                <li>🐄 Gau Seva</li>
-                <li>🍲 Khichdi Seva</li>
-              </ul>
-            </div>
-
-            <div className="rounded-3xl border bg-white p-6">
-              <Receipt />
-
-              <h3 className="mt-4 text-2xl font-black">Donation Receipt</h3>
-
-              <p className="mt-2 text-sm text-slate-500">
-                After successful payment PDF receipt is generated automatically.
-              </p>
-            </div>
-          </aside>
-        </div>
-      </div>
-      {showReceiptModal && receiptData && (
-        <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black/60 px-4">
-          <div className="max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-[2rem] bg-white p-6 shadow-2xl">
-            <div className="mb-5 flex items-center justify-between">
-              <h2 className="font-serif text-3xl font-black text-[#1a0a00]">
-                Donation Receipt Preview
+        <div className="mx-auto max-w-6xl px-5 py-16">
+          <div className="grid gap-8 lg:grid-cols-[1fr_360px]">
+            <div className="rounded-3xl border bg-white p-8">
+              <h2 className="font-serif text-4xl font-black">
+                Donation Details
               </h2>
 
-              <button
-                onClick={() => setShowReceiptModal(false)}
-                className="rounded-full bg-[#f5e8c8] px-4 py-2 font-black text-[#1a0a00]"
-              >
-                Close
-              </button>
+              <div className="mt-6 grid gap-5">
+                <Input
+                  label="Donor Name"
+                  value={form.donor_name}
+                  onChange={(v: any) => update("donor_name", v)}
+                />
+
+                <Input
+                  label="Email"
+                  value={form.donor_email}
+                  onChange={(v: any) => update("donor_email", v)}
+                />
+
+                <Input
+                  label="Phone"
+                  value={form.donor_phone}
+                  onChange={(v: any) => update("donor_phone", v)}
+                />
+
+                <div>
+                  <label className="text-sm font-black">Seva</label>
+
+                  <select
+                    value={form.seva_type}
+                    onChange={(e) => update("seva_type", e.target.value)}
+                    className="mt-2 w-full rounded-xl border p-4"
+                  >
+                    <option value="nitya_seva">Nitya Seva</option>
+
+                    <option value="gau_seva">Gau Seva</option>
+
+                    <option value="khichdi_seva">Khichdi Seva</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="text-sm font-black">Amount</label>
+
+                  <div className="mt-3 grid grid-cols-3 gap-3">
+                    {[108, 501, 1008, 2100, 5100, 11000].map((value) => (
+                      <button
+                        key={value}
+                        onClick={() => setAmount(value)}
+                        className={`rounded-xl p-4 font-black ${
+                          amount === value ? "bg-[#c8902a]" : "border"
+                        }`}
+                      >
+                        ₹{value}
+                      </button>
+                    ))}
+                  </div>
+
+                  <div className="mt-4 flex items-center rounded-xl border px-4">
+                    <IndianRupee size={20} />
+
+                    <input
+                      type="number"
+                      value={amount}
+                      onChange={(e) => setAmount(Number(e.target.value))}
+                      className="w-full p-4 outline-none"
+                    />
+                  </div>
+                </div>
+
+                <label className="flex gap-3">
+                  <input
+                    type="checkbox"
+                    checked={form.is_anonymous}
+                    onChange={(e) => update("is_anonymous", e.target.checked)}
+                  />
+                  Donate anonymously
+                </label>
+
+                <button
+                  disabled={loading}
+                  onClick={() => {
+                    isLoggedIn ? donate() : navigate("/login");
+                  }}
+                  className="rounded-2xl bg-[#c8902a] py-4 text-lg font-black"
+                >
+                  {isLoggedIn
+                    ? loading
+                      ? "Processing..."
+                      : `Donate ₹${amount}`
+                    : "Login to Donate ..."}
+                </button>
+
+                {receiptData && (
+                  <div className="rounded-2xl border border-green-200 bg-green-50 p-5">
+                    <h3 className="text-xl font-black text-green-800">
+                      Donation Successful 🙏
+                    </h3>
+
+                    <p className="mt-1 text-sm font-bold text-green-700">
+                      Your receipt is ready to download.
+                    </p>
+
+                    <button
+                      onClick={() => generateDonationReceiptPdf(receiptData)}
+                      className="mt-4 w-full rounded-2xl bg-green-700 py-3 font-black text-white"
+                    >
+                      Download Donation Receipt PDF
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
 
-            <DonationReceiptPreview receipt={receiptData} />
+            <aside className="space-y-5">
+              <div className="rounded-3xl bg-[#1a0a00] p-6 text-white">
+                <Sparkles className="text-[#d4a853]" />
 
-            <div className="mt-6 flex flex-wrap gap-3">
-              <button
-                onClick={() => generateDonationReceiptPdf(receiptData)}
-                className="flex-1 rounded-2xl bg-[#c8902a] py-4 font-black text-[#1a0a00]"
-              >
-                Download PDF
-              </button>
+                <h3 className="mt-4 text-3xl font-black">Seva Opportunities</h3>
 
-              <button
-                onClick={() => setShowReceiptModal(false)}
-                className="flex-1 rounded-2xl border border-[#ede0c8] py-4 font-black text-[#5c3d1a]"
-              >
-                Done
-              </button>
-            </div>
+                <ul className="mt-4 space-y-3 text-sm">
+                  <li>🙏 Nitya Seva</li>
+                  <li>🐄 Gau Seva</li>
+                  <li>🍲 Khichdi Seva</li>
+                </ul>
+              </div>
+
+              <div className="rounded-3xl border bg-white p-6">
+                <Receipt />
+
+                <h3 className="mt-4 text-2xl font-black">Donation Receipt</h3>
+
+                <p className="mt-2 text-sm text-slate-500">
+                  After successful payment PDF receipt is generated
+                  automatically.
+                </p>
+              </div>
+            </aside>
           </div>
         </div>
-      )}
-    </div>
+        {showReceiptModal && receiptData && (
+          <div className="fixed inset-0 z-[999] flex items-center justify-center bg-black/60 px-4">
+            <div className="max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-[2rem] bg-white p-6 shadow-2xl">
+              <div className="mb-5 flex items-center justify-between">
+                <h2 className="font-serif text-3xl font-black text-[#1a0a00]">
+                  Donation Receipt Preview
+                </h2>
+
+                <button
+                  onClick={() => setShowReceiptModal(false)}
+                  className="rounded-full bg-[#f5e8c8] px-4 py-2 font-black text-[#1a0a00]"
+                >
+                  Close
+                </button>
+              </div>
+
+              <DonationReceiptPreview receipt={receiptData} />
+
+              <div className="mt-6 flex flex-wrap gap-3">
+                <button
+                  onClick={() => generateDonationReceiptPdf(receiptData)}
+                  className="flex-1 rounded-2xl bg-[#c8902a] py-4 font-black text-[#1a0a00]"
+                >
+                  Download PDF
+                </button>
+
+                <button
+                  onClick={() => setShowReceiptModal(false)}
+                  className="flex-1 rounded-2xl border border-[#ede0c8] py-4 font-black text-[#5c3d1a]"
+                >
+                  Done
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </>
   );
 }
 

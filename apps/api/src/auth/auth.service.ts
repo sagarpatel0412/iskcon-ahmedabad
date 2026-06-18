@@ -7,7 +7,7 @@ import {
 import { InjectModel } from '@nestjs/sequelize';
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
-import { Request } from 'express';
+import { Request, Response } from 'express';
 import { v4 as uuidv4 } from 'uuid';
 
 import { RegisterDto } from './dto/register.dto';
@@ -24,6 +24,16 @@ import { OtpVerification } from './otp-verification.model';
 import { MailService } from 'src/common/services/mail.service';
 import { PasswordResetToken } from './password-reset-token.model';
 import { Op } from 'sequelize';
+
+const COOKIE_NAME = 'krishna_session';
+
+const COOKIE_OPTIONS = {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === 'production',
+  sameSite: 'lax' as const,
+  maxAge: 30 * 24 * 60 * 60 * 1000,
+  path: '/',
+};
 
 @Injectable()
 export class AuthService {
@@ -135,7 +145,7 @@ export class AuthService {
     };
   }
 
-  async login(dto: LoginDto, req: Request) {
+  async login(dto: LoginDto, req: Request, res?: Response) {
     const user = await this.userModel.findOne({
       where: { email: dto.email },
     });
@@ -160,6 +170,15 @@ export class AuthService {
     const tokenData = await this.createAuthToken(user, dto, req);
     const { password_hash, ...safeUser } = user.get({ plain: true }) as any;
 
+    if (dto.device_type === 'web' && res) {
+      this.setAuthCookie(res, tokenData.token);
+
+      return {
+        message: 'Login successful',
+        expires_at: tokenData.expires_at,
+        user: safeUser,
+      };
+    }
 
     return {
       message: 'Login successful',
@@ -168,28 +187,43 @@ export class AuthService {
     };
   }
 
-  async logout(authorization: string) {
-    const rawToken = this.extractBearerToken(authorization);
+  async logout(authorization?: string, req?: Request, res?: Response) {
+    const cookieToken = req?.cookies?.[COOKIE_NAME];
+    const token = cookieToken || this.extractBearerToken(authorization);
 
-    const activeTokens = await this.authTokenModel.findAll({
-      where: { revoked_at: null },
+    const { uuid, rawToken } = this.parseSessionToken(token);
+
+    const authToken = await this.authTokenModel.findOne({
+      where: {
+        uuid,
+        revoked_at: null,
+        expires_at: {
+          [Op.gt]: new Date(),
+        },
+      },
     });
 
-    for (const authToken of activeTokens) {
-      const isMatch = await bcrypt.compare(rawToken, authToken.token_hash);
-
-      if (isMatch) {
-        await authToken.update({
-          revoked_at: new Date(),
-        });
-
-        return {
-          message: 'Logout successful',
-        };
-      }
+    if (!authToken) {
+      this.clearAuthCookie(res);
+      throw new UnauthorizedException('Invalid token');
     }
 
-    throw new UnauthorizedException('Invalid token');
+    const isMatch = await bcrypt.compare(rawToken, authToken.token_hash);
+
+    if (!isMatch) {
+      this.clearAuthCookie(res);
+      throw new UnauthorizedException('Invalid token');
+    }
+
+    await authToken.update({
+      revoked_at: new Date(),
+    });
+
+    this.clearAuthCookie(res);
+
+    return {
+      message: 'Logout successful',
+    };
   }
 
   async sendOtp(dto: SendOtpDto) {
@@ -261,7 +295,7 @@ export class AuthService {
     };
   }
 
-  async verifyOtp(dto: VerifyOtpDto, req: Request) {
+  async verifyOtp(dto: VerifyOtpDto, req: Request, res?: Response) {
     if (!dto.email && !dto.phone) {
       throw new BadRequestException('Email or phone is required');
     }
@@ -319,18 +353,39 @@ export class AuthService {
         throw new UnauthorizedException('User not found');
       }
 
+      if (!user.is_active) {
+        throw new UnauthorizedException('User account is inactive');
+      }
+
+      const deviceType =
+        dto.device_type === 'android' ||
+        dto.device_type === 'ios' ||
+        dto.device_type === 'web'
+          ? dto.device_type
+          : 'web';
+
       const tokenData = await this.createAuthToken(
         user,
         {
           email: user.email,
           password: '',
-          device_type: 'android',
-          device_name: 'OTP Login',
+          device_type: deviceType,
+          device_name: dto.device_name || 'OTP Login',
         } as LoginDto,
         req,
       );
 
       const { password_hash, ...safeUser } = user.get({ plain: true }) as any;
+
+      if (deviceType === 'web' && res) {
+        this.setAuthCookie(res, tokenData.token);
+
+        return {
+          message: 'OTP login successful',
+          expires_at: tokenData.expires_at,
+          user: safeUser,
+        };
+      }
 
       return {
         message: 'OTP login successful',
@@ -345,6 +400,7 @@ export class AuthService {
   }
 
   private async createAuthToken(user: User, dto: LoginDto, req: Request) {
+    const tokenUuid = uuidv4();
     const rawToken = crypto.randomBytes(64).toString('hex');
     const tokenHash = await bcrypt.hash(rawToken, 10);
 
@@ -352,7 +408,7 @@ export class AuthService {
     expiresAt.setDate(expiresAt.getDate() + 30);
 
     await this.authTokenModel.create({
-      uuid: uuidv4(),
+      uuid: tokenUuid,
       user_id: user.id,
       token_hash: tokenHash,
       device_type: dto.device_type ?? null,
@@ -363,9 +419,22 @@ export class AuthService {
     });
 
     return {
-      token: rawToken,
+      token: `${tokenUuid}.${rawToken}`,
       token_type: 'Bearer',
       expires_at: expiresAt,
+    };
+  }
+
+  private parseSessionToken(token: string) {
+    const [uuid, rawToken] = token.split('.');
+
+    if (!uuid || !rawToken) {
+      throw new UnauthorizedException('Invalid token format');
+    }
+
+    return {
+      uuid,
+      rawToken,
     };
   }
 
@@ -381,6 +450,21 @@ export class AuthService {
     }
 
     return token;
+  }
+
+  private setAuthCookie(res: Response, token: string) {
+    res.cookie(COOKIE_NAME, token, COOKIE_OPTIONS);
+  }
+
+  private clearAuthCookie(res?: Response) {
+    if (!res) return;
+
+    res.clearCookie(COOKIE_NAME, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/',
+    });
   }
 
   private generateOtp() {

@@ -4,13 +4,14 @@ import { CalendarPlus, Eye, Pencil, Search } from "lucide-react";
 import { getEvents } from "../../services/eventService";
 import { badgeClass, formatDate, posterUrl } from "./eventStyles";
 import useAuth from "../../hooks/useAuth";
+import PageSeo from "../../components/seo/PageSeo";
 
 export default function EventListPage() {
   const [events, setEvents] = useState<any[]>([]);
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("all");
 
-  const  {isDevotee} = useAuth()
+  const { isDevotee } = useAuth();
 
   const load = async () => {
     const res = await getEvents();
@@ -23,101 +24,119 @@ export default function EventListPage() {
 
   const filtered = useMemo(() => {
     return events.filter((event) => {
-      const matchSearch = event.title?.toLowerCase().includes(search.toLowerCase());
+      const matchSearch = event.title
+        ?.toLowerCase()
+        .includes(search.toLowerCase());
       const matchStatus = status === "all" || event.status === status;
       return matchSearch && matchStatus;
     });
   }, [events, search, status]);
 
   return (
-    <div className="min-h-screen  p-5">
-      {/* <div className="mb-5 rounded-2xl bg-[#1a0a00] px-5 py-3 text-center text-xs font-black tracking-[0.25em] text-[#d4a853]">
+    <>
+      <PageSeo
+        title="Explore Events | ISKCON Ahmedabad"
+        description="Explore events and enjoy krishna conscious"
+      />
+
+      <div className="min-h-screen  p-5">
+        {/* <div className="mb-5 rounded-2xl bg-[#1a0a00] px-5 py-3 text-center text-xs font-black tracking-[0.25em] text-[#d4a853]">
         ॐ नमो भगवते वासुदेवाय · ISKCON Ahmedabad Event Management
       </div> */}
 
-      <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
-        <div>
-          <h1 className="font-serif text-4xl font-black text-[#1a0a00]">Events</h1>
-          <p className="mt-1 text-sm font-bold text-[#9a7a4a]">
-            Manage all ISKCON Ahmedabad events.
-          </p>
-        </div>
+        <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <h1 className="font-serif text-4xl font-black text-[#1a0a00]">
+              Events
+            </h1>
+            <p className="mt-1 text-sm font-bold text-[#9a7a4a]">
+              Manage all ISKCON Ahmedabad events.
+            </p>
+          </div>
 
-        {/* <Link
+          {/* <Link
           to="/events/create"
           className="inline-flex items-center gap-2 rounded-xl bg-[#c8902a] px-5 py-3 text-sm font-black text-[#1a0a00] hover:bg-[#d4a853]"
         >
           <CalendarPlus size={18} />
           Create Event
         </Link> */}
-      </div>
-
-      <div className="mb-5 flex flex-wrap gap-3">
-        <select
-          value={status}
-          onChange={(e) => setStatus(e.target.value)}
-          className="rounded-full border border-[#ede0c8] bg-white px-4 py-2 text-sm font-bold text-[#5c3d1a]"
-        >
-          <option value="all">All Status</option>
-          <option value="published">Published</option>
-          <option value="draft">Draft</option>
-          <option value="cancelled">Cancelled</option>
-          <option value="completed">Completed</option>
-        </select>
-
-        <div className="flex min-w-[260px] items-center gap-2 rounded-full border border-[#ede0c8] bg-white px-4 py-2">
-          <Search size={17} className="text-[#9a7a4a]" />
-          <input
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search events..."
-            className="w-full bg-transparent text-sm font-bold outline-none"
-          />
         </div>
-      </div>
 
-      <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-        {filtered.map((event) => (
-          <div
-            key={event.uuid}
-            className="overflow-hidden rounded-2xl border border-[#ede0c8] bg-white shadow-sm transition hover:shadow-xl"
+        <div className="mb-5 flex flex-wrap gap-3">
+          <select
+            value={status}
+            onChange={(e) => setStatus(e.target.value)}
+            className="rounded-full border border-[#ede0c8] bg-white px-4 py-2 text-sm font-bold text-[#5c3d1a]"
           >
-            {event.poster_url ? (
-              <img
-                src={posterUrl(event.poster_url)}
-                className="h-44 w-full object-cover"
-              />
-            ) : (
-              <div className="relative flex h-44 items-center justify-center bg-gradient-to-br from-[#1a0a00] to-[#3d2200]">
-                <div className="absolute right-4 top-0 text-8xl text-[#c8902a]/10">ॐ</div>
-                <p className="px-5 text-center font-serif text-2xl font-black text-[#d4a853]">
+            <option value="all">All Status</option>
+            <option value="published">Published</option>
+            <option value="draft">Draft</option>
+            <option value="cancelled">Cancelled</option>
+            <option value="completed">Completed</option>
+          </select>
+
+          <div className="flex min-w-[260px] items-center gap-2 rounded-full border border-[#ede0c8] bg-white px-4 py-2">
+            <Search size={17} className="text-[#9a7a4a]" />
+            <input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search events..."
+              className="w-full bg-transparent text-sm font-bold outline-none"
+            />
+          </div>
+        </div>
+
+        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+          {filtered.map((event) => (
+            <div
+              key={event.uuid}
+              className="overflow-hidden rounded-2xl border border-[#ede0c8] bg-white shadow-sm transition hover:shadow-xl"
+            >
+              {event.poster_url ? (
+                <img
+                  src={posterUrl(event.poster_url)}
+                  className="h-44 w-full object-cover"
+                />
+              ) : (
+                <div className="relative flex h-44 items-center justify-center bg-gradient-to-br from-[#1a0a00] to-[#3d2200]">
+                  <div className="absolute right-4 top-0 text-8xl text-[#c8902a]/10">
+                    ॐ
+                  </div>
+                  <p className="px-5 text-center font-serif text-2xl font-black text-[#d4a853]">
+                    {event.title}
+                  </p>
+                </div>
+              )}
+
+              <div className="p-5">
+                <div className="mb-3 flex items-center justify-between">
+                  <span className="rounded-full bg-[#c8902a] px-3 py-1 text-xs font-black text-[#1a0a00]">
+                    {formatDate(event.event_date)}
+                  </span>
+                  <span
+                    className={`rounded-full border px-3 py-1 text-xs font-black ${badgeClass(event.status)}`}
+                  >
+                    {event.status || "draft"}
+                  </span>
+                </div>
+
+                <h2 className="font-serif text-2xl font-black text-[#1a0a00]">
                   {event.title}
-                </p>
-              </div>
-            )}
+                </h2>
 
-            <div className="p-5">
-              <div className="mb-3 flex items-center justify-between">
-                <span className="rounded-full bg-[#c8902a] px-3 py-1 text-xs font-black text-[#1a0a00]">
-                  {formatDate(event.event_date)}
-                </span>
-                <span className={`rounded-full border px-3 py-1 text-xs font-black ${badgeClass(event.status)}`}>
-                  {event.status || "draft"}
-                </span>
-              </div>
+                <div className="mt-3 space-y-1 text-sm font-bold text-[#9a7a4a]">
+                  <p>
+                    🕐 {event.start_time || "-"} – {event.end_time || "-"}
+                  </p>
+                  <p>📍 {event.location || "-"}</p>
+                  <p>
+                    {event.is_paid ? `₹${event.price_amount}` : "Free Event"}
+                  </p>
+                </div>
 
-              <h2 className="font-serif text-2xl font-black text-[#1a0a00]">
-                {event.title}
-              </h2>
-
-              <div className="mt-3 space-y-1 text-sm font-bold text-[#9a7a4a]">
-                <p>🕐 {event.start_time || "-"} – {event.end_time || "-"}</p>
-                <p>📍 {event.location || "-"}</p>
-                <p>{event.is_paid ? `₹${event.price_amount}` : "Free Event"}</p>
-              </div>
-
-              <div className="mt-5 flex gap-2 border-t border-[#ede0c8] pt-4">
-                {/* <Link
+                <div className="mt-5 flex gap-2 border-t border-[#ede0c8] pt-4">
+                  {/* <Link
                   to={`/events/${event.uuid}/edit`}
                   className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl border border-[#ede0c8] px-3 py-2 text-sm font-black text-[#5c3d1a]"
                 >
@@ -125,18 +144,19 @@ export default function EventListPage() {
                   Edit
                 </Link> */}
 
-                <Link
-                  to={`/events/${event.uuid}`}
-                  className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#1a0a00] px-3 py-2 text-sm font-black text-[#d4a853]"
-                >
-                  <Eye size={16} />
-                  View
-                </Link>
+                  <Link
+                    to={`/events/${event.uuid}`}
+                    className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#1a0a00] px-3 py-2 text-sm font-black text-[#d4a853]"
+                  >
+                    <Eye size={16} />
+                    View
+                  </Link>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
-    </div>
+    </>
   );
 }

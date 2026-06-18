@@ -36,7 +36,7 @@ import {
   LocateIcon,
 } from "lucide-react";
 
-import { getToken, logout } from "../services/authService";
+import { logout } from "../services/authService";
 import useAuth from "../hooks/useAuth";
 import { PremiumBadge } from "../components/premium-badge/PremiumBadge";
 import { useState } from "react";
@@ -114,13 +114,13 @@ function MobileSection({ title, links = [], onClick }: any) {
 
 function Header() {
   const navigate = useNavigate();
-  const token = getToken();
+  // const token = getToken();
 
   const { roles, loading, user } = useAuth();
   const [mobileOpen, setMobileOpen] = useState(false);
   const closeMobile = () => setMobileOpen(false);
 
-  const isLoggedIn = !!token;
+  const isLoggedIn = !!user;
   const isSeeker = roles.includes("SEEKER");
   const isDevotee = roles.includes("DEVOTEE");
   const isAdmin = roles.includes("ADMIN");

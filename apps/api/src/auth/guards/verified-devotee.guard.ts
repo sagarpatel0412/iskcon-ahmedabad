@@ -12,18 +12,18 @@ export class VerifiedDevoteeGuard implements CanActivate {
     const user = request.user;
 
     const roles =
-      user?.dataValues?.user_roles?.map((ur: any) => {
-        // console.log(ur,'ur2')
-        return ur?.dataValues?.role?.dataValues?.name}) || [];
+      user?.user_roles
+        ?.map((userRole: any) => userRole?.role?.name)
+        .filter(Boolean) || [];
 
-      // console.log(roles,'roles')
-    const isDevotee = roles.includes('DEVOTEE') || roles.includes('ADMIN');
+    const isAdmin = roles.includes('ADMIN');
+    const isDevotee = roles.includes('DEVOTEE');
 
-    if (!isDevotee) {
+    if (!isDevotee && !isAdmin) {
       throw new ForbiddenException('Only devotees can access this route');
     }
 
-    if (!user.is_verified_devotee && !roles.includes('ADMIN')) {
+    if (!user?.is_verified_devotee && !isAdmin) {
       throw new ForbiddenException('Devotee verification required');
     }
 

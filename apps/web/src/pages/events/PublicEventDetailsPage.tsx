@@ -10,19 +10,20 @@ import {
   Users,
 } from "lucide-react";
 import { getEvent, getEventFormFields } from "../../services/eventService";
-import { getToken } from "../../services/authService";
 import { formatDate, posterUrl } from "./eventStyles";
 import AppLoader from "../../components/common/AppLoader";
+import useAuth from "../../hooks/useAuth";
 
 export default function PublicEventDetailsPage() {
   const { uuid } = useParams();
+  const {user} = useAuth()
   const navigate = useNavigate();
 
   const [event, setEvent] = useState<any>(null);
   const [fields, setFields] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const isLoggedIn = !!getToken();
+  const isLoggedIn = !!user;
 
   useEffect(() => {
     load();

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { AlertTriangle, Bug, ShieldCheck } from "lucide-react";
 import { submitProblemReport } from "../../services/supportService";
+import PageSeo from "../../components/seo/PageSeo";
 
 export default function ReportProblemPage() {
   const [form, setForm] = useState({
@@ -48,66 +49,119 @@ export default function ReportProblemPage() {
   };
 
   return (
-    <div className="-mx-5 -my-8 min-h-screen bg-[#fdfaf5]">
-      <section className="bg-[#1a0a00] px-5 py-24 text-center">
-        <AlertTriangle className="mx-auto h-16 w-16 text-[#d4a853]" />
-        <h1 className="mt-5 font-serif text-6xl font-black text-white">
-          Report a Problem
-        </h1>
-        <p className="mx-auto mt-4 max-w-2xl font-bold leading-8 text-[#f5e8c8]">
-          Found a bug, payment issue, login issue or content problem? Report it
-          here without login.
-        </p>
-      </section>
+    <>
+      <PageSeo
+        title="Report Problem | ISKCON Ahmedabad"
+        description="Report Problem"
+      />
 
-      <section className="mx-auto grid max-w-7xl gap-8 px-5 py-16 lg:grid-cols-[1fr_380px]">
-        <main className="rounded-[2rem] border border-[#ede0c8] bg-white p-8 shadow-sm">
-          <h2 className="font-serif text-4xl font-black text-[#1a0a00]">
-            Problem Details
-          </h2>
+      <div className="-mx-5 -my-8 min-h-screen bg-[#fdfaf5]">
+        <section className="bg-[#1a0a00] px-5 py-24 text-center">
+          <AlertTriangle className="mx-auto h-16 w-16 text-[#d4a853]" />
+          <h1 className="mt-5 font-serif text-6xl font-black text-white">
+            Report a Problem
+          </h1>
+          <p className="mx-auto mt-4 max-w-2xl font-bold leading-8 text-[#f5e8c8]">
+            Found a bug, payment issue, login issue or content problem? Report
+            it here without login.
+          </p>
+        </section>
 
-          <div className="mt-6 grid gap-5 md:grid-cols-2">
-            <Input label="Name" value={form.name} onChange={(v:any) => update("name", v)} />
-            <Input label="Email" value={form.email} onChange={(v:any) => update("email", v)} />
-            <Input label="Phone" value={form.phone} onChange={(v:any) => update("phone", v)} />
+        <section className="mx-auto grid max-w-7xl gap-8 px-5 py-16 lg:grid-cols-[1fr_380px]">
+          <main className="rounded-[2rem] border border-[#ede0c8] bg-white p-8 shadow-sm">
+            <h2 className="font-serif text-4xl font-black text-[#1a0a00]">
+              Problem Details
+            </h2>
 
-            <Select label="Problem Type" value={form.problem_type} onChange={(v:any) => update("problem_type", v)}>
-              <option value="login_issue">Login Issue</option>
-              <option value="payment_issue">Payment Issue</option>
-              <option value="event_issue">Event Issue</option>
-              <option value="content_issue">Journal / Newsletter Issue</option>
-              <option value="app_bug">App Bug</option>
-              <option value="other">Other</option>
-            </Select>
+            <div className="mt-6 grid gap-5 md:grid-cols-2">
+              <Input
+                label="Name"
+                value={form.name}
+                onChange={(v: any) => update("name", v)}
+              />
+              <Input
+                label="Email"
+                value={form.email}
+                onChange={(v: any) => update("email", v)}
+              />
+              <Input
+                label="Phone"
+                value={form.phone}
+                onChange={(v: any) => update("phone", v)}
+              />
 
-            <Input label="Page URL" value={form.page_url} onChange={(v:any) => update("page_url", v)} />
-            <Select label="Priority" value={form.priority} onChange={(v:any) => update("priority", v)}>
-              <option value="low">Low</option>
-              <option value="medium">Medium</option>
-              <option value="high">High</option>
-              <option value="urgent">Urgent</option>
-            </Select>
+              <Select
+                label="Problem Type"
+                value={form.problem_type}
+                onChange={(v: any) => update("problem_type", v)}
+              >
+                <option value="login_issue">Login Issue</option>
+                <option value="payment_issue">Payment Issue</option>
+                <option value="event_issue">Event Issue</option>
+                <option value="content_issue">
+                  Journal / Newsletter Issue
+                </option>
+                <option value="app_bug">App Bug</option>
+                <option value="other">Other</option>
+              </Select>
 
-            <Input label="Problem Title *" value={form.title} onChange={(v:any) => update("title", v)} />
-            <Textarea label="Description *" value={form.description} onChange={(v:any) => update("description", v)} />
-          </div>
+              <Input
+                label="Page URL"
+                value={form.page_url}
+                onChange={(v: any) => update("page_url", v)}
+              />
+              <Select
+                label="Priority"
+                value={form.priority}
+                onChange={(v: any) => update("priority", v)}
+              >
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
+                <option value="urgent">Urgent</option>
+              </Select>
 
-          <button
-            onClick={submit}
-            disabled={loading}
-            className="mt-7 w-full rounded-2xl bg-[#c8902a] px-6 py-4 font-black text-[#1a0a00] hover:bg-[#d4a853] disabled:opacity-60"
-          >
-            {loading ? "Submitting..." : "Submit Problem Report"}
-          </button>
-        </main>
+              <Input
+                label="Problem Title *"
+                value={form.title}
+                onChange={(v: any) => update("title", v)}
+              />
+              <Textarea
+                label="Description *"
+                value={form.description}
+                onChange={(v: any) => update("description", v)}
+              />
+            </div>
 
-        <aside className="space-y-5">
-          <SideCard icon={Bug} title="Bug Reports" text="Tell us what broke and where it happened." />
-          <SideCard icon={ShieldCheck} title="Public Support" text="You can report problems without logging in." />
-          <SideCard icon={AlertTriangle} title="Urgent Issues" text="Use high or urgent priority for payment or registration issues." />
-        </aside>
-      </section>
-    </div>
+            <button
+              onClick={submit}
+              disabled={loading}
+              className="mt-7 w-full rounded-2xl bg-[#c8902a] px-6 py-4 font-black text-[#1a0a00] hover:bg-[#d4a853] disabled:opacity-60"
+            >
+              {loading ? "Submitting..." : "Submit Problem Report"}
+            </button>
+          </main>
+
+          <aside className="space-y-5">
+            <SideCard
+              icon={Bug}
+              title="Bug Reports"
+              text="Tell us what broke and where it happened."
+            />
+            <SideCard
+              icon={ShieldCheck}
+              title="Public Support"
+              text="You can report problems without logging in."
+            />
+            <SideCard
+              icon={AlertTriangle}
+              title="Urgent Issues"
+              text="Use high or urgent priority for payment or registration issues."
+            />
+          </aside>
+        </section>
+      </div>
+    </>
   );
 }
 
@@ -159,9 +213,7 @@ function SideCard({ icon: Icon, title, text }: any) {
       <h3 className="mt-4 font-serif text-2xl font-black text-[#1a0a00]">
         {title}
       </h3>
-      <p className="mt-2 text-sm font-bold leading-6 text-[#9a7a4a]">
-        {text}
-      </p>
+      <p className="mt-2 text-sm font-bold leading-6 text-[#9a7a4a]">{text}</p>
     </div>
   );
 }

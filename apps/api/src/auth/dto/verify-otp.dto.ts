@@ -1,5 +1,11 @@
 // src/auth/dto/verify-otp.dto.ts
-import { IsIn, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import {
+  IsEnum,
+  IsIn,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export class VerifyOtpDto {
   @IsOptional()
@@ -14,6 +20,25 @@ export class VerifyOtpDto {
   @IsString()
   otp!: string;
 
-  @IsIn(['register', 'login', 'forgot_password', 'verify_email', 'verify_phone'])
-  purpose!: 'register' | 'login' | 'forgot_password' | 'verify_email' | 'verify_phone';
+  @IsIn([
+    'register',
+    'login',
+    'forgot_password',
+    'verify_email',
+    'verify_phone',
+  ])
+  purpose!:
+    | 'register'
+    | 'login'
+    | 'forgot_password'
+    | 'verify_email'
+    | 'verify_phone';
+
+  @IsOptional()
+  @IsEnum(['android', 'ios', 'web'])
+  device_type?: 'android' | 'ios' | 'web';
+
+  @IsOptional()
+  @IsString()
+  device_name?: string;
 }
