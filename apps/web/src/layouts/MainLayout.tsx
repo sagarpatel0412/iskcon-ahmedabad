@@ -372,19 +372,17 @@ function Header() {
                 label="Dashboard"
                 icon={LayoutDashboard}
               />
-              <NavItem to="/centres" label="Centres" icon={LocateIcon} />
-              <NavItem to="/get-app" label="Get App" icon={Smartphone} />
-
-              <NavItem
-                to="/content/subscriptions"
-                label="Content Pricing"
-                icon={MdMoney}
-              />
-
               <MegaDropdown
                 label="Menu"
                 icon={BookOpen}
                 groups={mainMenuLinks}
+              />
+              <NavItem to="/centres" label="Centres" icon={LocateIcon} />
+              <NavItem to="/get-app" label="Get App" icon={Smartphone} />
+              <NavItem
+                to="/content/subscriptions"
+                label="Content Pricing"
+                icon={MdMoney}
               />
             </>
           )}

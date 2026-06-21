@@ -74,6 +74,7 @@ import CentresPage from "./pages/centres/CentresPage";
 import AdminCentrePage from "./pages/admin/AdminCentrePage";
 import AboutKrishnaChaitanyaPage from "./pages/about/AboutKrishnaChaitanyaPage";
 import KrishnaGalleryPage from "./pages/gallery/GalleryPage";
+import SocialFloatingButton from "./components/social-button/SocialFloatingButton";
 
 export default function App() {
   return (
@@ -86,7 +87,10 @@ export default function App() {
           <Route path="/verify-otp" element={<VerifyOtpPage />} />
           <Route path="/about" element={<AboutIskconAhmedabadPage />} />
           <Route path="/about/prabhupada" element={<AboutPrabhupadaPage />} />
-          <Route path="/about/about-glory-of-krishna-and-chaitanya-mahaprabhu" element={<AboutKrishnaChaitanyaPage />} />
+          <Route
+            path="/about/about-glory-of-krishna-and-chaitanya-mahaprabhu"
+            element={<AboutKrishnaChaitanyaPage />}
+          />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/reset-password" element={<ResetPasswordPage />} />
           <Route path="/festivals" element={<FestivalCalendarPage />} />
@@ -106,7 +110,7 @@ export default function App() {
           <Route path="/social-feed" element={<InstagramFeedPage />} />
           <Route path="/centres" element={<CentresPage />} />
           <Route path="/gallery" element={<KrishnaGalleryPage />} />
-             
+
           <Route path="/not-found" element={<NotFoundPage />} />
           <Route path="*" element={<Navigate to="/not-found" />} />
         </Route>
@@ -142,7 +146,7 @@ export default function App() {
           <Route element={<MainLayout />}>
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route element={<RoleRoute allowedRoles={["SEEKER", "DEVOTEE"]} />}>
-               <Route path="/content/:uuid" element={<ContentDetailsPage />} />
+              <Route path="/content/:uuid" element={<ContentDetailsPage />} />
             </Route>
 
             <Route element={<RoleRoute allowedRoles={["DEVOTEE"]} />}>
@@ -211,7 +215,7 @@ export default function App() {
                 element={<CourseRegistrationsPage />}
               /> */}
             </Route>
-            
+
             <Route
               path="/events/:uuid/register"
               element={<EventRegistrationPage />}
@@ -222,7 +226,7 @@ export default function App() {
             />
             <Route path="/progress/daily" element={<DailyProgressPage />} />
             <Route path="/progress/track" element={<TrackProgressPage />} />
-            
+
             <Route
               path="/content/subscriptions"
               element={<ContentSubscriptionPlansPage />}
@@ -239,6 +243,12 @@ export default function App() {
           </Route>
         </Route>
       </Routes>
+      <SocialFloatingButton
+        whatsapp={{ phoneNumber: "919876543210", message: "Hare Krishna! I'd like to know more." }}
+        instagram="https://instagram.com/iskconahmedabad"
+        youtube="https://youtube.com/@iskconahmedabad"
+        position="bottom-right"
+      />
       <BackToTopButton />
     </BrowserRouter>
   );
