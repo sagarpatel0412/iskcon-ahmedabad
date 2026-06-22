@@ -182,7 +182,7 @@ export default function TripDetailsPage() {
         <div className="h-[360px] bg-orange-100">
           {trip.cover_image_url ? (
             <img
-              src={trip.cover_image_url}
+              src={`http://localhost:3000${trip.cover_image_url}`}
               alt={trip.title}
               className="h-full w-full object-cover"
             />

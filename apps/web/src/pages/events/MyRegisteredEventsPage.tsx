@@ -1,6 +1,14 @@
 import { useEffect, useState } from "react";
 import { QRCodeCanvas } from "qrcode.react";
-import { CalendarDays, Clock, MapPin, QrCode, Ticket, X } from "lucide-react";
+import {
+  CalendarDays,
+  Clock,
+  Loader2,
+  MapPin,
+  QrCode,
+  Ticket,
+  X,
+} from "lucide-react";
 import { getMyRegistrations } from "../../services/eventService";
 import { formatDate, posterUrl } from "./eventStyles";
 import AppLoader from "../../components/common/AppLoader";
@@ -9,19 +17,31 @@ export default function MyRegisteredEventsPage() {
   const [registrations, setRegistrations] = useState<any[]>([]);
   const [selected, setSelected] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [pageLoading, setPageLoading] = useState(false);
+
+  const [page, setPage] = useState(1);
+  const [pagination, setPagination] = useState<any>(null);
 
   const load = async () => {
     try {
-      const res = await getMyRegistrations();
-      setRegistrations(Array.isArray(res.data) ? res.data : []);
+      setPageLoading(true);
+
+      const res = await getMyRegistrations({
+        page,
+        limit: 5,
+      });
+
+      setRegistrations(res.data.items || []);
+      setPagination(res.data.pagination || null);
     } finally {
       setLoading(false);
+      setPageLoading(false);
     }
   };
 
   useEffect(() => {
     load();
-  }, []);
+  }, [page]);
 
   if (loading) {
     return (
@@ -38,16 +58,28 @@ export default function MyRegisteredEventsPage() {
         ॐ नमो भगवते वासुदेवाय · My Registered Events
       </div>
 
-      <div className="mb-6">
-        <h1 className="font-serif text-4xl font-black text-[#1a0a00]">
-          My Registered Events
-        </h1>
-        <p className="mt-1 text-sm font-bold text-[#9a7a4a]">
-          View your registrations and entry QR codes.
-        </p>
+      <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <h1 className="font-serif text-4xl font-black text-[#1a0a00]">
+            My Registered Events
+          </h1>
+          <p className="mt-1 text-sm font-bold text-[#9a7a4a]">
+            View your registrations and entry QR codes.
+          </p>
+        </div>
+
+        {pagination && (
+          <p className="rounded-full bg-[#f5e8c8] px-4 py-2 text-sm font-black text-[#8b6914]">
+            Total: {pagination.total}
+          </p>
+        )}
       </div>
 
-      {registrations.length === 0 ? (
+      {pageLoading ? (
+        <div className="flex min-h-[220px] items-center justify-center rounded-3xl border border-[#ede0c8] bg-white">
+          <Loader2 className="h-8 w-8 animate-spin text-[#c8902a]" />
+        </div>
+      ) : registrations.length === 0 ? (
         <div className="rounded-3xl border border-[#ede0c8] bg-white p-12 text-center">
           <div className="text-5xl">🙏</div>
           <h2 className="mt-4 font-serif text-3xl font-black text-[#1a0a00]">
@@ -58,15 +90,41 @@ export default function MyRegisteredEventsPage() {
           </p>
         </div>
       ) : (
-        <div className="space-y-4">
-          {registrations.map((registration) => (
-            <RegisteredEventRow
-              key={registration.uuid}
-              registration={registration}
-              onClick={() => setSelected(registration)}
-            />
-          ))}
-        </div>
+        <>
+          <div className="space-y-4">
+            {registrations.map((registration) => (
+              <RegisteredEventRow
+                key={registration.uuid}
+                registration={registration}
+                onClick={() => setSelected(registration)}
+              />
+            ))}
+          </div>
+
+          {pagination && pagination.totalPages > 1 && (
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+              <button
+                disabled={page <= 1}
+                onClick={() => setPage((p) => p - 1)}
+                className="rounded-xl border border-[#ede0c8] bg-white px-4 py-2 font-black text-[#5c3d1a] disabled:opacity-50"
+              >
+                Previous
+              </button>
+
+              <span className="font-black text-[#8b6914]">
+                Page {pagination.page} of {pagination.totalPages}
+              </span>
+
+              <button
+                disabled={page >= pagination.totalPages}
+                onClick={() => setPage((p) => p + 1)}
+                className="rounded-xl border border-[#ede0c8] bg-white px-4 py-2 font-black text-[#5c3d1a] disabled:opacity-50"
+              >
+                Next
+              </button>
+            </div>
+          )}
+        </>
       )}
 
       {selected && (

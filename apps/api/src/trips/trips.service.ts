@@ -70,6 +70,27 @@ export class TripsService {
     return trip.created_by === user.id || this.isAdmin(user);
   }
 
+  async findLatestTrips() {
+    return this.tripModel.findAll({
+      where: {
+        status: 'published',
+      },
+      include: [
+        { model: Centre },
+        {
+          model: User,
+          as: 'creator',
+          attributes: {
+            exclude: ['password_hash'],
+          },
+        },
+        { model: TripStay },
+      ],
+      order: [['start_date', 'ASC']],
+      limit: 4,
+    });
+  }
+
   async createTrip(dto: CreateTripDto, user: User) {
     const slug = this.slugify(dto.title);
 
@@ -171,18 +192,57 @@ export class TripsService {
     };
   }
 
-  async findPublishedTrips() {
-    return this.tripModel.findAll({
-      where: {
-        status: 'published',
-      },
+  async findPublishedTrips(query: {
+    page: number;
+    limit: number;
+    search?: string;
+  }) {
+    const page = query.page > 0 ? query.page : 1;
+    const limit = query.limit > 0 ? query.limit : 9;
+    const offset = (page - 1) * limit;
+
+    const where: any = {
+      status: 'published',
+    };
+
+    if (query.search?.trim()) {
+      where[Op.or] = [
+        { title: { [Op.like]: `%${query.search}%` } },
+        { description: { [Op.like]: `%${query.search}%` } },
+        { destination: { [Op.like]: `%${query.search}%` } },
+        { departure_city: { [Op.like]: `%${query.search}%` } },
+        { meeting_point: { [Op.like]: `%${query.search}%` } },
+      ];
+    }
+
+    const { rows, count } = await this.tripModel.findAndCountAll({
+      where,
       include: [
         { model: Centre },
-        { model: User, as: 'creator' },
+        {
+          model: User,
+          as: 'creator',
+          attributes: {
+            exclude: ['password_hash'],
+          },
+        },
         { model: TripStay },
       ],
       order: [['start_date', 'ASC']],
+      limit,
+      offset,
+      distinct: true,
     });
+
+    return {
+      items: rows,
+      pagination: {
+        total: count,
+        page,
+        limit,
+        totalPages: Math.ceil(count / limit),
+      },
+    };
   }
 
   async findTrip(uuid: string) {
@@ -889,6 +949,43 @@ export class TripsService {
 
     return {
       received: true,
+    };
+  }
+
+  async uploadCoverImage(
+    tripUuid: string,
+    file: Express.Multer.File,
+    user: User,
+  ) {
+    const trip = await this.tripModel.findOne({
+      where: { uuid: tripUuid },
+    });
+
+    if (!trip) {
+      throw new BadRequestException('Trip not found');
+    }
+
+    const isCreator = trip.created_by === user.id;
+
+    const isAdmin =
+      user.user_roles?.some((ur: any) => ur.role?.name === 'ADMIN') ?? false;
+
+    if (!isCreator && !isAdmin) {
+      throw new ForbiddenException(
+        'Only trip creator or admin can upload cover image',
+      );
+    }
+
+    const coverImageUrl = `/uploads/trips/${file.filename}`;
+
+    await trip.update({
+      cover_image_url: coverImageUrl,
+    });
+
+    return {
+      message: 'Cover image uploaded successfully',
+      cover_image_url: coverImageUrl,
+      trip,
     };
   }
 }

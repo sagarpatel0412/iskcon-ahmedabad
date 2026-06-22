@@ -19,7 +19,7 @@ import {
 } from "lucide-react";
 
 import useAuth from "../../hooks/useAuth";
-import { getTrips } from "../../services/tripService";
+import { getLatestTrips } from "../../services/tripService";
 import { getCourses } from "../../services/courseService";
 import { getMySubscription } from "../../services/contentPaymentService";
 import AppLoader from "../../components/common/AppLoader";
@@ -47,7 +47,7 @@ export default function DashboardPage() {
       setLoading(true);
 
       const [tripsRes, coursesRes, subRes] = await Promise.all([
-        getTrips(),
+        getLatestTrips(),
         getCourses(),
         getMySubscription().catch(() => null),
         // getEvents(),

@@ -33,4 +33,9 @@ export class AppController {
   getRecommended(@Req() req: Request) {
     return this.appService.getRecommendedImages(req);
   }
+
+  @Get("test-sentry")
+  testSentry() {
+    throw new Error("Testing Sentry from NestJS");
+  }
 }

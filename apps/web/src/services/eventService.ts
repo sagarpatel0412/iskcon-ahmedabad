@@ -1,6 +1,8 @@
 import { api } from "../api/client";
 
-export const getEvents = () => api.get("/events");
+export const getEvents = (params?: any) => {
+  return api.get('/events', { params });
+};
 export const getEvent = (uuid: string) => api.get(`/events/${uuid}`);
 export const getMyEvents = () => api.get("/events/my-events");
 
@@ -38,5 +40,6 @@ export const scanEventQr = (qr_token: string) =>
 export const registerForEvent = (uuid: string, data: any) =>
   api.post(`/events/${uuid}/register`, data);
 
-export const getMyRegistrations = () =>
-  api.get("/events/my-registrations");
+export const getMyRegistrations = (params?: any) => {
+  return api.get('/events/my-registrations', { params });
+};

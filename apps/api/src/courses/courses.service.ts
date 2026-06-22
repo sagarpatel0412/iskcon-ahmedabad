@@ -22,6 +22,7 @@ import { RefundCoursePaymentDto } from './dto/refund-course-payment.dto';
 
 import { User } from '../users/user.model';
 import { Centre } from '../centres/centre.model';
+import { Op } from 'sequelize';
 
 @Injectable()
 export class CoursesService {
@@ -136,18 +137,57 @@ export class CoursesService {
     };
   }
 
-  async findPublishedCourses() {
-    return this.courseModel.findAll({
-      where: {
-        status: 'published',
-      },
+  async findPublishedCourses(query: {
+    page: number;
+    limit: number;
+    search?: string;
+  }) {
+    const page = query.page > 0 ? query.page : 1;
+    const limit = query.limit > 0 ? query.limit : 9;
+    const offset = (page - 1) * limit;
+
+    const where: any = {
+      status: 'published',
+    };
+
+    if (query.search?.trim()) {
+      where[Op.or] = [
+        { title: { [Op.like]: `%${query.search}%` } },
+        { description: { [Op.like]: `%${query.search}%` } },
+        { venue_name: { [Op.like]: `%${query.search}%` } },
+        { venue_address: { [Op.like]: `%${query.search}%` } },
+        { course_mode: { [Op.like]: `%${query.search}%` } },
+      ];
+    }
+
+    const { rows, count } = await this.courseModel.findAndCountAll({
+      where,
       include: [
         { model: Centre },
-        { model: User, as: 'creator' },
+        {
+          model: User,
+          as: 'creator',
+          attributes: {
+            exclude: ['password_hash'],
+          },
+        },
         { model: CourseSession },
       ],
       order: [['start_date', 'ASC']],
+      limit,
+      offset,
+      distinct: true,
     });
+
+    return {
+      items: rows,
+      pagination: {
+        total: count,
+        page,
+        limit,
+        totalPages: Math.ceil(count / limit),
+      },
+    };
   }
 
   async findCourse(uuid: string) {
@@ -632,5 +672,42 @@ export class CoursesService {
 
       throw new BadRequestException(error?.message || 'Refund failed');
     }
+  }
+
+  async uploadCoverImage(
+    courseUuid: string,
+    file: Express.Multer.File,
+    user: User,
+  ) {
+    const course = await this.courseModel.findOne({
+      where: { uuid: courseUuid },
+    });
+
+    if (!course) {
+      throw new BadRequestException('Course not found');
+    }
+
+    const isCreator = course.created_by === user.id;
+
+    const isAdmin =
+      user.user_roles?.some((ur: any) => ur.role?.name === 'ADMIN') ?? false;
+
+    if (!isCreator && !isAdmin) {
+      throw new ForbiddenException(
+        'Only course creator or admin can upload cover image',
+      );
+    }
+
+    const coverImageUrl = `/uploads/courses/${file.filename}`;
+
+    await course.update({
+      cover_image_url: coverImageUrl,
+    });
+
+    return {
+      message: 'Cover image uploaded successfully',
+      cover_image_url: coverImageUrl,
+      course,
+    };
   }
 }

@@ -113,7 +113,35 @@ export default function TripForm({
           <Input label="Title" value={form.title} onChange={(v:any) => update("title", v)} />
           <Input label="Destination" value={form.destination} onChange={(v:any) => update("destination", v)} />
           <Input label="Departure City" value={form.departure_city} onChange={(v:any) => update("departure_city", v)} />
-          <Input label="Cover Image URL" value={form.cover_image_url} onChange={(v:any) => update("cover_image_url", v)} />
+          <label className="block">
+            <span className="mb-1 block text-sm font-bold text-slate-700">
+              Cover Image
+            </span>
+
+            <input
+              type="file"
+              accept="image/png,image/jpeg,image/jpg,image/webp"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                update("coverFile", file || null);
+              }}
+              className="w-full rounded-2xl border border-orange-100 px-4 py-3 text-sm outline-none focus:border-orange-400"
+            />
+
+            {form.coverFile && (
+              <p className="mt-2 text-xs font-bold text-orange-700">
+                Selected: {form.coverFile.name}
+              </p>
+            )}
+
+            {form.cover_image_url && !form.coverFile && (
+              <img
+                src={form.cover_image_url}
+                alt="Trip Cover"
+                className="mt-3 h-40 w-full rounded-2xl object-cover"
+              />
+            )}
+          </label>
           <Input type="date" label="Start Date" value={form.start_date} onChange={(v:any) => update("start_date", v)} />
           <Input type="date" label="End Date" value={form.end_date} onChange={(v:any) => update("end_date", v)} />
           <Input label="Meeting Point" value={form.meeting_point} onChange={(v:any) => update("meeting_point", v)} />

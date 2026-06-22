@@ -19,6 +19,7 @@ import * as crypto from 'crypto';
 import { RegisterEventDto } from './dto/register-event.dto';
 import { EventAttendance } from './event-attendance.model';
 import { ScanEventQrDto } from './dto/scan-event-qr.dto';
+import { Op } from 'sequelize';
 
 @Injectable()
 export class EventsService {
@@ -76,14 +77,56 @@ export class EventsService {
     };
   }
 
-  async findAll() {
-    return this.eventModel.findAll({
+  async findAll(query: {
+    page: number;
+    limit: number;
+    search?: string;
+    status?: string;
+  }) {
+    const page = query.page > 0 ? query.page : 1;
+    const limit = query.limit > 0 ? query.limit : 9;
+    const offset = (page - 1) * limit;
+
+    const where: any = {};
+
+    if (query.search) {
+      where[Op.or] = [
+        { title: { [Op.like]: `%${query.search}%` } },
+        { description: { [Op.like]: `%${query.search}%` } },
+        { location: { [Op.like]: `%${query.search}%` } },
+      ];
+    }
+
+    if (query.status && query.status !== 'all') {
+      where.status = query.status;
+    }
+
+    const { rows, count } = await this.eventModel.findAndCountAll({
+      where,
       include: [
         { model: Centre },
-        { model: User, as: 'creator' },
+        { model: User, 
+          as: 'creator', 
+          attributes: {
+            exclude: ['password_hash'],
+          },
+        },
       ],
       order: [['event_date', 'ASC']],
+      limit,
+      offset,
+      distinct: true,
     });
+
+    return {
+      items: rows,
+      pagination: {
+        total: count,
+        page,
+        limit,
+        totalPages: Math.ceil(count / limit),
+      },
+    };
   }
 
   async findOne(uuid: string) {
@@ -368,18 +411,54 @@ export class EventsService {
     };
   }
 
-  async myRegistrations(user: User) {
-    return this.eventRegistrationModel.findAll({
-      where: {
-        user_id: user.id,
-      },
-      include: [
-        {
-          model: Event,
+  async myRegistrations(
+    user: User,
+    query: {
+      page: number;
+      limit: number;
+    },
+  ) {
+    const page = query.page > 0 ? query.page : 1;
+    const limit = query.limit > 0 ? query.limit : 10;
+    const offset = (page - 1) * limit;
+
+    const { rows, count } =
+      await this.eventRegistrationModel.findAndCountAll({
+        where: {
+          user_id: user.id,
         },
-      ],
-      order: [['id', 'DESC']],
-    });
+        include: [
+          {
+            model: Event,
+            include: [
+              {
+                model: Centre,
+              },
+              {
+                model: User,
+                as: 'creator',
+                attributes: {
+                  exclude: ['password_hash'],
+                },
+              },
+            ],
+          },
+        ],
+        order: [['id', 'DESC']],
+        limit,
+        offset,
+        distinct: true,
+      });
+
+    return {
+      items: rows,
+      pagination: {
+        total: count,
+        page,
+        limit,
+        totalPages: Math.ceil(count / limit),
+      },
+    };
   }
 
   async eventRegistrations(eventUuid: string, user: User) {

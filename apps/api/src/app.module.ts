@@ -62,9 +62,11 @@ import { AdminModule } from './admin/admin.module';
 import { SupportModule } from './support/support.module';
 import { ContactMessage } from './support/models/contact-message.model';
 import { ProblemReport } from './support/models/problem-report.model';
+import { SentryModule } from '@sentry/nestjs/setup';
 
 @Module({
   imports: [
+    SentryModule.forRoot(),
     ScheduleModule.forRoot(),
     ConfigModule.forRoot({
       isGlobal: true,

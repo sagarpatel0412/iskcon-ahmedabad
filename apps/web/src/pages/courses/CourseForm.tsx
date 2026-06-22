@@ -37,7 +37,7 @@ export default function CourseForm({
   const removeSession = (index: number) => {
     update(
       "sessions",
-      form.sessions.filter((_: any, i: number) => i !== index)
+      form.sessions.filter((_: any, i: number) => i !== index),
     );
   };
 
@@ -45,48 +45,144 @@ export default function CourseForm({
     <div className="space-y-6">
       <Card title="Basic Course Details">
         <div className="grid gap-4 md:grid-cols-2">
-          <Input label="Title" value={form.title} onChange={(v:any) => update("title", v)} />
-          <Input label="Cover Image URL" value={form.cover_image_url} onChange={(v:any) => update("cover_image_url", v)} />
+          <Input
+            label="Title"
+            value={form.title}
+            onChange={(v: any) => update("title", v)}
+          />
+          <label className="block">
+            <span className="mb-1 block text-sm font-bold text-slate-700">
+              Cover Image
+            </span>
+
+            <input
+              type="file"
+              accept="image/png,image/jpeg,image/jpg,image/webp"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                update("coverFile", file || null);
+              }}
+              className="w-full rounded-2xl border border-orange-100 px-4 py-3 text-sm outline-none focus:border-orange-400"
+            />
+
+            {form.cover_image_url && !form.coverFile && (
+              <img
+                src={
+                  form.cover_image_url.startsWith("http")
+                    ? form.cover_image_url
+                    : `http://localhost:3000${form.cover_image_url}`
+                }
+                alt="Course Cover"
+                className="mt-3 h-36 w-full rounded-2xl object-cover"
+              />
+            )}
+
+            {form.coverFile && (
+              <p className="mt-2 text-xs font-bold text-orange-700">
+                Selected: {form.coverFile.name}
+              </p>
+            )}
+          </label>
 
           <Select
             label="Course Mode"
             value={form.course_mode}
-            onChange={(v:any) => update("course_mode", v)}
+            onChange={(v: any) => update("course_mode", v)}
             options={["offline", "online", "hybrid"]}
           />
 
           <Select
             label="Status"
             value={form.status}
-            onChange={(v:any) => update("status", v)}
+            onChange={(v: any) => update("status", v)}
             options={["draft", "published", "cancelled", "completed"]}
           />
 
-          <Input type="date" label="Start Date" value={form.start_date} onChange={(v:any) => update("start_date", v)} />
-          <Input type="date" label="End Date" value={form.end_date} onChange={(v:any) => update("end_date", v)} />
-          <Input type="time" label="Start Time" value={form.start_time} onChange={(v:any) => update("start_time", v)} />
-          <Input type="time" label="End Time" value={form.end_time} onChange={(v:any) => update("end_time", v)} />
+          <Input
+            type="date"
+            label="Start Date"
+            value={form.start_date}
+            onChange={(v: any) => update("start_date", v)}
+          />
+          <Input
+            type="date"
+            label="End Date"
+            value={form.end_date}
+            onChange={(v: any) => update("end_date", v)}
+          />
+          <Input
+            type="time"
+            label="Start Time"
+            value={form.start_time}
+            onChange={(v: any) => update("start_time", v)}
+          />
+          <Input
+            type="time"
+            label="End Time"
+            value={form.end_time}
+            onChange={(v: any) => update("end_time", v)}
+          />
         </div>
 
-        <Textarea label="Description" value={form.description} onChange={(v:any) => update("description", v)} />
+        <Textarea
+          label="Description"
+          value={form.description}
+          onChange={(v: any) => update("description", v)}
+        />
       </Card>
 
       <Card title="Venue / Online Details">
         <div className="grid gap-4 md:grid-cols-2">
-          <Input label="Venue Name" value={form.venue_name} onChange={(v:any) => update("venue_name", v)} />
-          <Input label="Online Meeting URL" value={form.online_meeting_url} onChange={(v:any) => update("online_meeting_url", v)} />
+          <Input
+            label="Venue Name"
+            value={form.venue_name}
+            onChange={(v: any) => update("venue_name", v)}
+          />
+          <Input
+            label="Online Meeting URL"
+            value={form.online_meeting_url}
+            onChange={(v: any) => update("online_meeting_url", v)}
+          />
         </div>
 
-        <Textarea label="Venue Address" value={form.venue_address} onChange={(v:any) => update("venue_address", v)} />
+        <Textarea
+          label="Venue Address"
+          value={form.venue_address}
+          onChange={(v: any) => update("venue_address", v)}
+        />
       </Card>
 
       <Card title="Payment & Registration">
         <div className="grid gap-4 md:grid-cols-2">
-          <Input type="number" label="Max Capacity" value={form.max_capacity} onChange={(v:any) => update("max_capacity", v)} />
-          <Input type="number" label="Price Amount" value={form.price_amount} onChange={(v:any) => update("price_amount", v)} />
-          <Input label="Currency" value={form.currency} onChange={(v:any) => update("currency", v)} />
-          <Input type="datetime-local" label="Registration Start" value={form.registration_start_date} onChange={(v:any) => update("registration_start_date", v)} />
-          <Input type="datetime-local" label="Registration End" value={form.registration_end_date} onChange={(v:any) => update("registration_end_date", v)} />
+          <Input
+            type="number"
+            label="Max Capacity"
+            value={form.max_capacity}
+            onChange={(v: any) => update("max_capacity", v)}
+          />
+          <Input
+            type="number"
+            label="Price Amount"
+            value={form.price_amount}
+            onChange={(v: any) => update("price_amount", v)}
+          />
+          <Input
+            label="Currency"
+            value={form.currency}
+            onChange={(v: any) => update("currency", v)}
+          />
+          <Input
+            type="datetime-local"
+            label="Registration Start"
+            value={form.registration_start_date}
+            onChange={(v: any) => update("registration_start_date", v)}
+          />
+          <Input
+            type="datetime-local"
+            label="Registration End"
+            value={form.registration_end_date}
+            onChange={(v: any) => update("registration_end_date", v)}
+          />
         </div>
 
         <label className="mt-4 flex items-center gap-2 font-bold text-slate-700">
@@ -104,25 +200,33 @@ export default function CourseForm({
           <Textarea
             label="What You Will Learn"
             value={form.what_you_will_learn}
-            onChange={(v:any) => update("what_you_will_learn", v)}
+            onChange={(v: any) => update("what_you_will_learn", v)}
           />
 
           <Textarea
             label="Requirements"
             value={form.requirements}
-            onChange={(v:any) => update("requirements", v)}
+            onChange={(v: any) => update("requirements", v)}
           />
 
           <Textarea
             label="Rules"
             value={form.rules}
-            onChange={(v:any) => update("rules", v)}
+            onChange={(v: any) => update("rules", v)}
           />
         </div>
 
         <div className="mt-4 grid gap-4 md:grid-cols-2">
-          <Input label="Contact Name" value={form.contact_name} onChange={(v:any) => update("contact_name", v)} />
-          <Input label="Contact Phone" value={form.contact_phone} onChange={(v:any) => update("contact_phone", v)} />
+          <Input
+            label="Contact Name"
+            value={form.contact_name}
+            onChange={(v: any) => update("contact_name", v)}
+          />
+          <Input
+            label="Contact Phone"
+            value={form.contact_phone}
+            onChange={(v: any) => update("contact_phone", v)}
+          />
         </div>
       </Card>
 
@@ -162,7 +266,7 @@ export default function CourseForm({
                   type="number"
                   label="Session Number"
                   value={session.session_number}
-                  onChange={(v:any) =>
+                  onChange={(v: any) =>
                     updateSession(index, "session_number", Number(v))
                   }
                 />
@@ -170,40 +274,40 @@ export default function CourseForm({
                 <Input
                   label="Session Title"
                   value={session.title}
-                  onChange={(v:any) => updateSession(index, "title", v)}
+                  onChange={(v: any) => updateSession(index, "title", v)}
                 />
 
                 <Input
                   type="date"
                   label="Session Date"
                   value={session.session_date}
-                  onChange={(v:any) => updateSession(index, "session_date", v)}
+                  onChange={(v: any) => updateSession(index, "session_date", v)}
                 />
 
                 <Input
                   type="time"
                   label="Start Time"
                   value={session.start_time}
-                  onChange={(v:any) => updateSession(index, "start_time", v)}
+                  onChange={(v: any) => updateSession(index, "start_time", v)}
                 />
 
                 <Input
                   type="time"
                   label="End Time"
                   value={session.end_time}
-                  onChange={(v:any) => updateSession(index, "end_time", v)}
+                  onChange={(v: any) => updateSession(index, "end_time", v)}
                 />
 
                 <Input
                   label="Venue Name"
                   value={session.venue_name}
-                  onChange={(v:any) => updateSession(index, "venue_name", v)}
+                  onChange={(v: any) => updateSession(index, "venue_name", v)}
                 />
 
                 <Input
                   label="Online Meeting URL"
                   value={session.online_meeting_url}
-                  onChange={(v:any) =>
+                  onChange={(v: any) =>
                     updateSession(index, "online_meeting_url", v)
                   }
                 />
@@ -212,13 +316,13 @@ export default function CourseForm({
               <Textarea
                 label="Description"
                 value={session.description}
-                onChange={(v:any) => updateSession(index, "description", v)}
+                onChange={(v: any) => updateSession(index, "description", v)}
               />
 
               <Textarea
                 label="Venue Address"
                 value={session.venue_address}
-                onChange={(v:any) => updateSession(index, "venue_address", v)}
+                onChange={(v: any) => updateSession(index, "venue_address", v)}
               />
             </div>
           ))}

@@ -92,7 +92,7 @@ temp
 # ==========================================
 # Sequelize / Nest Uploads
 # ==========================================
-uploads
+apps/api/uploads/donation-receipts/
 storage
 
 # ==========================================

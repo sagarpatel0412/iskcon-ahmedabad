@@ -1,12 +1,16 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Get,
   Param,
   Patch,
   Post,
+  Query,
   Req,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 
 import { CoursesService } from './courses.service';
@@ -19,14 +23,25 @@ import { RefundCoursePaymentDto } from './dto/refund-course-payment.dto';
 import { AuthTokenGuard } from '../auth/guards/auth-token.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { extname } from 'path';
 
 @Controller('courses')
 export class CoursesController {
   constructor(private readonly coursesService: CoursesService) {}
 
   @Get()
-  findPublishedCourses() {
-    return this.coursesService.findPublishedCourses();
+  findPublishedCourses(
+    @Query('page') page = '1',
+    @Query('limit') limit = '9',
+    @Query('search') search = '',
+  ) {
+    return this.coursesService.findPublishedCourses({
+      page: Number(page),
+      limit: Number(limit),
+      search,
+    });
   }
 
   @Get(':uuid')
@@ -107,5 +122,45 @@ export class CoursesController {
     @Body() dto: RefundCoursePaymentDto,
   ) {
     return this.coursesService.refundPayment(paymentUuid, dto);
+  }
+
+  @UseGuards(AuthTokenGuard, RolesGuard)
+  @Roles('DEVOTEE', 'ADMIN')
+  @Post(':uuid/cover-image')
+  @UseInterceptors(
+    FileInterceptor('cover_image', {
+      storage: diskStorage({
+        destination: './uploads/courses',
+        filename: (_req, file, callback) => {
+          const uniqueName =
+            Date.now() +
+            '-' +
+            Math.round(Math.random() * 1e9) +
+            extname(file.originalname);
+
+          callback(null, uniqueName);
+        },
+      }),
+      fileFilter: (_req, file, callback) => {
+        if (!file.mimetype.match(/\/(jpg|jpeg|png|webp)$/)) {
+          return callback(
+            new BadRequestException('Only image files are allowed'),
+            false,
+          );
+        }
+
+        callback(null, true);
+      },
+      limits: {
+        fileSize: 5 * 1024 * 1024,
+      },
+    }),
+  )
+  uploadCoverImage(
+    @Param('uuid') uuid: string,
+    @UploadedFile() file: Express.Multer.File,
+    @Req() req: any,
+  ) {
+    return this.coursesService.uploadCoverImage(uuid, file, req.user);
   }
 }

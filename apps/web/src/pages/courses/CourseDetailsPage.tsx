@@ -164,7 +164,7 @@ export default function CourseDetailsPage() {
         <div className="h-[360px] bg-orange-100">
           {course.cover_image_url ? (
             <img
-              src={course.cover_image_url}
+              src={`http://localhost:3000${course.cover_image_url}`}
               alt={course.title}
               className="h-full w-full object-cover"
             />

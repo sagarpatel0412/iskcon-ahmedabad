@@ -11,6 +11,7 @@ import {
   UploadedFile,
   UseInterceptors,
   BadRequestException,
+  Query,
 } from '@nestjs/common';
 
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -41,14 +42,31 @@ export class EventsController {
   }
 
   @Get()
-  findAll() {
-    return this.eventsService.findAll();
+  findAll(
+    @Query('page') page = '1',
+    @Query('limit') limit = '9',
+    @Query('search') search = '',
+    @Query('status') status = 'all',
+  ) {
+    return this.eventsService.findAll({
+      page: Number(page),
+      limit: Number(limit),
+      search,
+      status,
+    });
   }
 
   @UseGuards(AuthTokenGuard)
   @Get('my-registrations')
-  myRegistrations(@Req() req: any) {
-    return this.eventsService.myRegistrations(req.user);
+  myRegistrations(
+    @Req() req: any,
+    @Query('page') page = '1',
+    @Query('limit') limit = '10',
+  ) {
+    return this.eventsService.myRegistrations(req.user, {
+      page: Number(page),
+      limit: Number(limit),
+    });
   }
 
   @UseGuards(AuthTokenGuard, RolesGuard, VerifiedDevoteeGuard)

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import CourseForm from "./CourseForm";
-import { createCourse } from "../../services/courseService";
+import { createCourse, uploadCourseCoverImage } from "../../services/courseService";
 
 const emptyForm = {
   title: "",
@@ -40,14 +40,25 @@ export default function CreateCoursePage() {
     try {
       setSaving(true);
 
+      const { coverFile, ...coursePayload } = form;
+
       const res = await createCourse({
-        ...form,
-        centre_id: form.centre_id ? Number(form.centre_id) : undefined,
-        max_capacity: form.max_capacity ? Number(form.max_capacity) : undefined,
-        price_amount: Number(form.price_amount || 0),
+        ...coursePayload,
+        centre_id: coursePayload.centre_id
+          ? Number(coursePayload.centre_id)
+          : undefined,
+        max_capacity: coursePayload.max_capacity
+          ? Number(coursePayload.max_capacity)
+          : undefined,
+        price_amount: Number(coursePayload.price_amount || 0),
+        cover_image_url: undefined,
       });
 
-      alert("Course created successfully 🙏");
+      const course = res.data.course;
+
+      if (coverFile && course?.uuid) {
+        await uploadCourseCoverImage(course.uuid, coverFile);
+      }
       navigate(`/courses/${res.data.course.uuid}`);
     } catch (error: any) {
       alert(error?.response?.data?.message || "Failed to create course");

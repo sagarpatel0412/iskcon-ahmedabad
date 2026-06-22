@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import TripForm from "./TripForm";
-import { createTrip } from "../../services/tripService";
+import { createTrip, uploadTripCoverImage } from "../../services/tripService";
 
 const emptyForm = {
   title: "",
@@ -39,15 +39,28 @@ export default function CreateTripPage() {
     try {
       setSaving(true);
 
+      const { coverFile, ...tripPayload } = form;
+
       const res = await createTrip({
-        ...form,
-        centre_id: form.centre_id ? Number(form.centre_id) : undefined,
-        max_capacity: form.max_capacity ? Number(form.max_capacity) : undefined,
-        price_amount: Number(form.price_amount || 0),
+        ...tripPayload,
+        centre_id: tripPayload.centre_id
+          ? Number(tripPayload.centre_id)
+          : undefined,
+        max_capacity: tripPayload.max_capacity
+          ? Number(tripPayload.max_capacity)
+          : undefined,
+        price_amount: Number(tripPayload.price_amount || 0),
+        cover_image_url: undefined,
       });
 
+      const trip = res.data.trip;
+
+      if (coverFile && trip?.uuid) {
+        await uploadTripCoverImage(trip.uuid, coverFile);
+      }
+
       alert("Trip created successfully 🙏");
-      navigate(`/trips/${res.data.trip.uuid}`);
+      navigate(`/trips/${trip.uuid}`);
     } catch (error: any) {
       alert(error?.response?.data?.message || "Failed to create trip");
     } finally {

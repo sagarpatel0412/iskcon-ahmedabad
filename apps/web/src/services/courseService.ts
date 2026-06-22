@@ -1,6 +1,8 @@
 import { api } from "../api/client";
 
-export const getCourses = () => api.get("/courses");
+export const getCourses = (params?: any) => {
+  return api.get('/courses', { params });
+};
 
 export const getCourseByUuid = (uuid: string) =>
   api.get(`/courses/${uuid}`);
@@ -31,3 +33,14 @@ export const addUsersToCourse = (uuid: string, payload: any) =>
 
 export const refundCoursePayment = (paymentUuid: string, payload: any) =>
   api.post(`/courses/payments/${paymentUuid}/refund`, payload);
+
+export const uploadCourseCoverImage = (uuid: string, file: File) => {
+  const formData = new FormData();
+  formData.append('cover_image', file);
+
+  return api.post(`/courses/${uuid}/cover-image`, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+};
