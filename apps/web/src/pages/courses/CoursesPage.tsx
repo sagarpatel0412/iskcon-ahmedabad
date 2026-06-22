@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { getCourses } from "../../services/courseService";
 import PageSeo from "../../components/seo/PageSeo";
+import SocialShareButtons from "../../components/social-share/SocialShareButtons";
 
 type Course = {
   uuid: string;
@@ -232,6 +233,12 @@ export default function CoursesPage() {
                           </div>
                         )}
                       </div>
+
+                      <SocialShareButtons
+                        url={`${window.location.origin}/courses/${course.uuid}`}
+                        title={course.title}
+                        description={course.description || ""}
+                      />
 
                       <button className="mt-6 w-full rounded-full bg-orange-600 px-5 py-3 font-bold text-white transition group-hover:bg-orange-700">
                         View Course

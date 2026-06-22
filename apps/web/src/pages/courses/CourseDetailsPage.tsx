@@ -21,6 +21,7 @@ import {
   verifyCoursePayment,
 } from "../../services/courseService";
 import useAuth from "../../hooks/useAuth";
+import SocialShareButtons from "../../components/social-share/SocialShareButtons";
 
 declare global {
   interface Window {
@@ -197,6 +198,11 @@ export default function CourseDetailsPage() {
               {course.description ||
                 "A spiritual learning course for seekers and devotees."}
             </p>
+            <SocialShareButtons
+              url={`${window.location.origin}/courses/${course.uuid}`}
+              title={course.title}
+              description={course.description || ""}
+            />
           </div>
         </div>
       </section>
