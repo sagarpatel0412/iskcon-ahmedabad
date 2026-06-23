@@ -12,7 +12,8 @@
     "db:dump": "bash database/scripts/export-full.sh",
     "db:all":"bash database/scripts/export-schema.sh && bash database/scripts/export-full.sh",
     "db:restore-schema": "bash database/scripts/run-schema.sh",
-    "db:restore-full": "bash database/scripts/run-full-dump.sh"
+    "db:restore-full": "bash database/scripts/run-full-dump.sh",
+    "db:seed": "bash database/scripts/create-seeder.sh"
   },
   "devDependencies": {
     "turbo": "latest"
