@@ -34,6 +34,21 @@ import {
   LifeBuoy,
   Smartphone,
   LocateIcon,
+  AlertTriangle,
+  BarChart3,
+  Boxes,
+  FolderTree,
+  Heart,
+  Package,
+  Package2,
+  RotateCcw,
+  ShoppingBag,
+  ShoppingBasket,
+  ShoppingCart,
+  Star,
+  TicketPercent,
+  Truck,
+  Warehouse,
 } from "lucide-react";
 
 import { logout } from "../services/authService";
@@ -262,6 +277,93 @@ function Header() {
     },
   ];
 
+  const shopLinks = !isLoggedIn
+  ? [
+      { to: "/shop", label: "Shop", icon: ShoppingBag },
+    ]
+  : canManage
+    ? [
+        { to: "/shop", label: "Shop", icon: ShoppingBag },
+
+        { to: "/shop/cart", label: "Cart", icon: ShoppingCart },
+        { to: "/shop/wishlist", label: "Wishlist", icon: Heart },
+        { to: "/shop/my-orders", label: "My Orders", icon: Package },
+
+        { to: "/shop/manage", label: "Dashboard", icon: LayoutDashboard },
+
+        {
+          to: "/shop/manage/products",
+          label: "Manage Products",
+          icon: Package2,
+        },
+
+        {
+          to: "/shop/manage/my-products",
+          label: "My Products",
+          icon: Boxes,
+        },
+
+        {
+          to: "/shop/manage/categories",
+          label: "Categories",
+          icon: FolderTree,
+        },
+
+        {
+          to: "/shop/manage/orders",
+          label: "Orders",
+          icon: ShoppingBasket,
+        },
+
+        {
+          to: "/shop/manage/shipping",
+          label: "Shipping",
+          icon: Truck,
+        },
+
+        {
+          to: "/shop/manage/refunds",
+          label: "Refunds",
+          icon: RotateCcw,
+        },
+
+        {
+          to: "/shop/manage/inventory",
+          label: "Inventory",
+          icon: Warehouse,
+        },
+
+        {
+          to: "/shop/manage/low-stock",
+          label: "Low Stock",
+          icon: AlertTriangle,
+        },
+
+        {
+          to: "/shop/manage/coupons",
+          label: "Coupons",
+          icon: TicketPercent,
+        },
+
+        {
+          to: "/shop/manage/reviews",
+          label: "Reviews",
+          icon: Star,
+        },
+
+        {
+          to: "/shop/manage/reports",
+          label: "Reports",
+          icon: BarChart3,
+        },
+      ]
+    : [
+        { to: "/shop", label: "Shop", icon: ShoppingBag },
+        { to: "/shop/cart", label: "Cart", icon: ShoppingCart },
+        { to: "/shop/wishlist", label: "Wishlist", icon: Heart },
+        { to: "/shop/my-orders", label: "My Orders", icon: Package },
+      ];
+
   const mainMenuLinks = [
     {
       title: "Seva & Donation",
@@ -272,6 +374,10 @@ function Header() {
           icon: LayoutDashboard,
         },
       ],
+    },
+    {
+      title: "Shop",
+      items: shopLinks
     },
     {
       title: "Events",
@@ -767,8 +873,8 @@ function MegaDropdown({
         {label}
       </button>
 
-      <div className="invisible absolute left-1/2 -translate-x-1/2 top-full z-50 mt-3 w-[1200px] rounded-[2rem] border border-[#ede0c8] bg-white p-5 opacity-0 shadow-2xl transition-all group-hover:visible group-hover:opacity-100">
-        <div className="grid grid-cols-3 gap-5">
+      <div className="invisible absolute left-1/2 top-full z-50 mt-3 max-h-[75vh] w-[calc(100vw-2rem)] max-w-6xl -translate-x-1/2 overflow-y-auto rounded-[2rem] border border-[#ede0c8] bg-white p-5 opacity-0 shadow-2xl transition-all group-hover:visible group-hover:opacity-100">
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {groups.map((group) => (
             <div key={group.title} className="rounded-2xl bg-[#fdfaf5] p-4">
               <h3 className="mb-3 text-xs font-black uppercase tracking-[0.18em] text-[#c8902a]">
@@ -786,9 +892,8 @@ function MegaDropdown({
                       className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-bold text-[#1a0a00] transition hover:bg-[#f5e8c8]"
                     >
                       {ItemIcon && (
-                        <ItemIcon className="h-4 w-4 text-[#c8902a]" />
+                        <ItemIcon className="h-4 w-4 shrink-0 text-[#c8902a]" />
                       )}
-
                       <span>{item.label}</span>
                     </Link>
                   );

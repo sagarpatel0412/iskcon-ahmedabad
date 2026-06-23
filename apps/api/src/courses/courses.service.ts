@@ -24,6 +24,7 @@ import { User } from '../users/user.model';
 import { Centre } from '../centres/centre.model';
 import { Op } from 'sequelize';
 
+
 @Injectable()
 export class CoursesService {
   private razorpay: Razorpay;
@@ -61,6 +62,27 @@ export class CoursesService {
 
   private canManageCourse(course: Course, user: User) {
     return course.created_by === user.id || this.isAdmin(user);
+  }
+
+  async findLatestCourses() {
+    return this.courseModel.findAll({
+      where: {
+        status: 'published',
+      },
+      include: [
+        { model: Centre },
+        {
+          model: User,
+          as: 'creator',
+          attributes: {
+            exclude: ['password_hash'],
+          },
+        },
+        { model: CourseSession },
+      ],
+      order: [['start_date', 'ASC']],
+      limit: 4,
+    });
   }
 
   async createCourse(dto: CreateCourseDto, user: User) {

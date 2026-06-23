@@ -75,6 +75,28 @@ import AdminCentrePage from "./pages/admin/AdminCentrePage";
 import AboutKrishnaChaitanyaPage from "./pages/about/AboutKrishnaChaitanyaPage";
 import KrishnaGalleryPage from "./pages/gallery/GalleryPage";
 import SocialFloatingButton from "./components/social-button/SocialFloatingButton";
+import AdminShopProductsPage from "./pages/shop/admin/AdminShopProductsPage";
+import AdminShopCategoriesPage from "./pages/shop/admin/AdminShopCategoriesPage";
+import AdminShopOrdersPage from "./pages/shop/admin/AdminShopOrdersPage";
+import AdminShopDashboardPage from "./pages/shop/admin/AdminShopDashboardPage";
+import AdminShopMyProductsPage from "./pages/shop/admin/AdminShopMyProductsPage";
+import AdminShopLowStockPage from "./pages/shop/admin/AdminShopLowStockPage";
+import AdminShopProductImagesPage from "./pages/shop/admin/AdminShopProductImagesPage";
+import AdminShopInventoryPage from "./pages/shop/admin/AdminShopInventoryPage";
+import AdminShopReportsPage from "./pages/shop/admin/AdminShopReportsPage";
+import AdminShopRefundsPage from "./pages/shop/admin/AdminShopRefundsPage";
+import AdminShopShippingPage from "./pages/shop/admin/AdminShopShippingPage";
+import ShopPage from "./pages/shop/ShopPage";
+import ShopProductDetailsPage from "./pages/shop/ShopProductDetailsPage";
+import CartPage from "./pages/shop/CartPage";
+import WishlistPage from "./pages/shop/WishlistPage";
+import CheckoutPage from "./pages/shop/CheckoutPage";
+import MyShopOrdersPage from "./pages/shop/MyShopOrdersPage";
+import ShopOrderDetailsPage from "./pages/shop/ShopOrderDetailsPage";
+import ShopPaymentSuccessPage from "./pages/shop/ShopPaymentSuccessPage";
+import ShopPaymentFailedPage from "./pages/shop/ShopPaymentFailedPage";
+import AdminShopCouponsPage from "./pages/shop/admin/AdminShopCouponsPage";
+import AdminShopReviewsPage from "./pages/shop/admin/AdminShopReviewsPage";
 
 export default function App() {
   return (
@@ -110,9 +132,32 @@ export default function App() {
           <Route path="/social-feed" element={<InstagramFeedPage />} />
           <Route path="/centres" element={<CentresPage />} />
           <Route path="/gallery" element={<KrishnaGalleryPage />} />
+          <Route path="/shop" element={<ShopPage />} />
+          <Route path="/shop/products/:uuid" element={<ShopProductDetailsPage />} />
 
           <Route path="/not-found" element={<NotFoundPage />} />
           <Route path="*" element={<Navigate to="/not-found" />} />
+        </Route>
+
+        <Route element={<RoleRoute allowedRoles={["DEVOTEE", "ADMIN"]} />}>
+          <Route element={<MainLayout />}>
+            <Route path="/shop/manage/products" element={<AdminShopProductsPage />} />
+            <Route path="/shop/manage/categories" element={<AdminShopCategoriesPage />} />
+            <Route path="/shop/manage/orders" element={<AdminShopOrdersPage />} />
+            <Route path="/shop/manage" element={<AdminShopDashboardPage />} />
+            <Route path="/shop/manage/my-products" element={<AdminShopMyProductsPage />} />
+            <Route path="/shop/manage/low-stock" element={<AdminShopLowStockPage />} />
+            <Route
+              path="/shop/manage/products/:uuid/images"
+              element={<AdminShopProductImagesPage />}
+            />
+            <Route path="/shop/manage/inventory" element={<AdminShopInventoryPage />} />
+            <Route path="/shop/manage/reports" element={<AdminShopReportsPage />} />
+            <Route path="/shop/manage/refunds" element={<AdminShopRefundsPage />} />
+            <Route path="/shop/manage/shipping" element={<AdminShopShippingPage />} />
+            <Route path="/shop/manage/coupons" element={<AdminShopCouponsPage />} />
+            <Route path="/shop/manage/reviews" element={<AdminShopReviewsPage />} />
+          </Route>
         </Route>
 
         <Route
@@ -145,6 +190,13 @@ export default function App() {
         <Route element={<ProtectedRoute />}>
           <Route element={<MainLayout />}>
             <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="/shop/cart" element={<CartPage />} />
+            <Route path="/shop/wishlist" element={<WishlistPage />} />
+            <Route path="/shop/checkout" element={<CheckoutPage />} />
+            <Route path="/shop/my-orders" element={<MyShopOrdersPage />} />
+            <Route path="/shop/orders/:uuid" element={<ShopOrderDetailsPage />} />
+            <Route path="/shop/payment-success" element={<ShopPaymentSuccessPage />} />
+            <Route path="/shop/payment-failed" element={<ShopPaymentFailedPage />} />
             <Route element={<RoleRoute allowedRoles={["SEEKER", "DEVOTEE"]} />}>
               <Route path="/content/:uuid" element={<ContentDetailsPage />} />
             </Route>

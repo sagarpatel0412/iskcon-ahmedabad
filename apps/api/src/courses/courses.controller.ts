@@ -44,6 +44,11 @@ export class CoursesController {
     });
   }
 
+  @Get('latest')
+  findLatestTrips() {
+    return this.coursesService.findLatestCourses();
+  }
+
   @Get(':uuid')
   findCourse(@Param('uuid') uuid: string) {
     return this.coursesService.findCourse(uuid);

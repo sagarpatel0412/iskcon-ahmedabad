@@ -4,6 +4,10 @@ export const getCourses = (params?: any) => {
   return api.get('/courses', { params });
 };
 
+export const getLatestCourses = () => {
+  return api.get('/courses/latest');
+};
+
 export const getCourseByUuid = (uuid: string) =>
   api.get(`/courses/${uuid}`);
 

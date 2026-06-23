@@ -63,6 +63,22 @@ import { SupportModule } from './support/support.module';
 import { ContactMessage } from './support/models/contact-message.model';
 import { ProblemReport } from './support/models/problem-report.model';
 import { SentryModule } from '@sentry/nestjs/setup';
+import { ShopModule } from './shop/shop.module';
+import { ProductCategory } from './shop/models/product-category.model';
+import { CartItem } from './shop/models/cart-item.model';
+import { Cart } from './shop/models/cart.model';
+import { OrderStatusHistory } from './shop/models/order-status-history.model';
+import { ProductImage } from './shop/models/product-image.model';
+import { ProductInventoryLog } from './shop/models/product-inventory-log.model';
+import { ProductOrderItem } from './shop/models/product-order-item.model';
+import { ProductOrder } from './shop/models/product-order.model';
+import { ProductPayment } from './shop/models/product-payment.model';
+import { Product } from './shop/models/product.model';
+import { ShippingAddress } from './shop/models/shipping-address.model';
+import { Wishlist } from './shop/models/wishlist.model';
+import { ProductReview } from './shop/models/product-review.model';
+import { ShopCoupon } from './shop/models/shop-coupon.model';
+import { ShopCouponUsage } from './shop/models/shop-coupon-usage.model';
 
 @Module({
   imports: [
@@ -126,6 +142,21 @@ import { SentryModule } from '@sentry/nestjs/setup';
           ProgressLevel,
           ContactMessage,
           ProblemReport,
+          ProductCategory,
+          Product,
+          ProductImage,
+          Wishlist,
+          Cart,
+          CartItem,
+          ShippingAddress,
+          ProductOrder,
+          ProductOrderItem,
+          ProductPayment,
+          OrderStatusHistory,
+          ProductInventoryLog,
+          ProductReview,
+          ShopCoupon,
+          ShopCouponUsage,
         ],
         autoLoadModels: true,
         synchronize: false,
@@ -146,6 +177,7 @@ import { SentryModule } from '@sentry/nestjs/setup';
     CoursesModule,
     AdminModule,
     SupportModule,
+    ShopModule,
   ],
   controllers: [AppController],
   providers: [AppService, MailService],

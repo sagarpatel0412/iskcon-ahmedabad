@@ -20,7 +20,7 @@ import {
 
 import useAuth from "../../hooks/useAuth";
 import { getLatestTrips } from "../../services/tripService";
-import { getCourses } from "../../services/courseService";
+import { getCourses, getLatestCourses } from "../../services/courseService";
 import { getMySubscription } from "../../services/contentPaymentService";
 import AppLoader from "../../components/common/AppLoader";
 import ProgressLevelCard from "../progress/ProgressLevelCard";
@@ -48,7 +48,7 @@ export default function DashboardPage() {
 
       const [tripsRes, coursesRes, subRes] = await Promise.all([
         getLatestTrips(),
-        getCourses(),
+        getLatestCourses(),
         getMySubscription().catch(() => null),
         // getEvents(),
       ]);
