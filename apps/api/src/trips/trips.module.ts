@@ -11,6 +11,7 @@ import { TripStay } from './models/trip-stay.model';
 import { TripRegistration } from './models/trip-registration.model';
 import { TripPayment } from './models/trip-payment.model';
 import { AuthToken } from 'src/auth/auth-token.model';
+import { NotificationsModule } from 'src/notifications/notifications.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { AuthToken } from 'src/auth/auth-token.model';
       TripPayment,
       AuthToken
     ]),
+    NotificationsModule,
   ],
   controllers: [TripsController],
   providers: [TripsService],

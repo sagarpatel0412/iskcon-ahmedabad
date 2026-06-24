@@ -16,6 +16,7 @@ import { AuthTokenGuard } from '../auth/guards/auth-token.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { VerifyContentPaymentDto } from './dto/verify-content-payment.dto';
+import { Throttle } from '@nestjs/throttler';
 
 @Controller('content')
 export class ContentController {
@@ -150,6 +151,7 @@ export class ContentController {
     return this.contentService.createPostPurchaseOrder(uuid, req.user);
   }
 
+  @Throttle({ default: { limit: 10, ttl: 60000 } })
   @UseGuards(AuthTokenGuard)
   @Post('posts/verify-payment')
   verifyPostPurchase(@Body() dto: VerifyContentPaymentDto, @Req() req: any) {

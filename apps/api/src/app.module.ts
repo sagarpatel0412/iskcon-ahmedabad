@@ -79,11 +79,22 @@ import { Wishlist } from './shop/models/wishlist.model';
 import { ProductReview } from './shop/models/product-review.model';
 import { ShopCoupon } from './shop/models/shop-coupon.model';
 import { ShopCouponUsage } from './shop/models/shop-coupon-usage.model';
+import { NotificationsModule } from './notifications/notifications.module';
+import { EmailTemplate } from './notifications/models/email-template.model';
+import { EmailLog } from './notifications/models/email-log.model';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler'
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
     SentryModule.forRoot(),
     ScheduleModule.forRoot(),
+    ThrottlerModule.forRoot([
+      {
+        ttl: 60000,
+        limit: 10,
+      },
+    ]),
     ConfigModule.forRoot({
       isGlobal: true,
     }),
@@ -157,6 +168,8 @@ import { ShopCouponUsage } from './shop/models/shop-coupon-usage.model';
           ProductReview,
           ShopCoupon,
           ShopCouponUsage,
+          EmailTemplate,
+          EmailLog,
         ],
         autoLoadModels: true,
         synchronize: false,
@@ -178,8 +191,16 @@ import { ShopCouponUsage } from './shop/models/shop-coupon-usage.model';
     AdminModule,
     SupportModule,
     ShopModule,
+    NotificationsModule,
   ],
   controllers: [AppController],
-  providers: [AppService, MailService],
+  providers: [
+    AppService, 
+    MailService,
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+  ],
 })
 export class AppModule {}

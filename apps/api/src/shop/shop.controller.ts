@@ -25,6 +25,7 @@ import { AuthTokenGuard } from '../auth/guards/auth-token.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { VerifiedDevoteeGuard } from '../auth/guards/verified-devotee.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
+import { Throttle } from '@nestjs/throttler';
 
 const imageFileFilter = (_req: any, file: Express.Multer.File, cb: any) => {
   if (!file.mimetype.match(/\/(jpg|jpeg|png|webp)$/)) {
@@ -47,6 +48,7 @@ export class ShopController {
     return this.shopService.createCategory(dto, req.user);
   }
 
+  @Throttle({ default: { limit: 60, ttl: 60000 } })
   @Get('categories')
   findCategories() {
     return this.shopService.findCategories();
@@ -75,6 +77,7 @@ export class ShopController {
     return this.shopService.createProduct(dto, req.user);
   }
 
+  @Throttle({ default: { limit: 60, ttl: 60000 } })
   @Get('products')
   findProducts(@Query() query: any) {
     return this.shopService.findProducts(query);
@@ -103,6 +106,7 @@ export class ShopController {
     return this.shopService.deleteProduct(uuid, req.user);
   }
 
+  @Throttle({ default: { limit: 5, ttl: 60000 } })
   @UseGuards(AuthTokenGuard, RolesGuard, VerifiedDevoteeGuard)
   @Roles('DEVOTEE', 'ADMIN')
   @Post('products/:uuid/images')
@@ -150,6 +154,7 @@ export class ShopController {
 
   // WISHLIST
 
+  @Throttle({ default: { limit: 20, ttl: 60000 } })
   @UseGuards(AuthTokenGuard)
   @Post('wishlist/:productUuid/toggle')
   toggleWishlist(@Param('productUuid') productUuid: string, @Req() req: any) {
@@ -170,12 +175,14 @@ export class ShopController {
     return this.shopService.myCart(req.user);
   }
 
+  @Throttle({ default: { limit: 20, ttl: 60000 } })
   @UseGuards(AuthTokenGuard)
   @Post('cart/items')
   addToCart(@Body() dto: any, @Req() req: any) {
     return this.shopService.addToCart(dto, req.user);
   }
 
+  @Throttle({ default: { limit: 20, ttl: 60000 } })
   @UseGuards(AuthTokenGuard)
   @Patch('cart/items/:uuid')
   updateCartItem(
@@ -208,12 +215,14 @@ export class ShopController {
 
   // ORDERS + PAYMENTS
 
+  @Throttle({ default: { limit: 10, ttl: 60000 } })
   @UseGuards(AuthTokenGuard)
   @Post('orders')
   createOrder(@Body() dto: any, @Req() req: any) {
     return this.shopService.createOrder(dto, req.user);
   }
 
+  @Throttle({ default: { limit: 10, ttl: 60000 } })
   @UseGuards(AuthTokenGuard)
   @Post('orders/verify-payment')
   verifyPayment(@Body() dto: any, @Req() req: any) {
@@ -323,6 +332,7 @@ export class ShopController {
     return this.shopService.deleteCoupon(uuid);
   }
 
+  @Throttle({ default: { limit: 10, ttl: 60000 } })
   @UseGuards(AuthTokenGuard)
   @Post('coupons/apply')
   applyCoupon(@Body() dto: any, @Req() req: any) {
@@ -331,6 +341,7 @@ export class ShopController {
 
   // Reviews
 
+  @Throttle({ default: { limit: 20, ttl: 60000 } })
   @UseGuards(AuthTokenGuard)
   @Post('products/:uuid/reviews')
   createReview(

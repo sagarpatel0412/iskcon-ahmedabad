@@ -26,11 +26,13 @@ import { Roles } from '../auth/decorators/roles.decorator';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
+import { Throttle } from '@nestjs/throttler';
 
 @Controller('courses')
 export class CoursesController {
   constructor(private readonly coursesService: CoursesService) {}
 
+  @Throttle({ default: { limit: 60, ttl: 60000 } })
   @Get()
   findPublishedCourses(
     @Query('page') page = '1',
@@ -93,6 +95,7 @@ export class CoursesController {
     return this.coursesService.addUsersToCourse(uuid, dto, req.user);
   }
 
+  @Throttle({ default: { limit: 10, ttl: 60000 } })
   @UseGuards(AuthTokenGuard)
   @Post('verify-payment')
   verifyPayment(@Body() dto: VerifyCoursePaymentDto, @Req() req: any) {
@@ -129,6 +132,7 @@ export class CoursesController {
     return this.coursesService.refundPayment(paymentUuid, dto);
   }
 
+  @Throttle({ default: { limit: 5, ttl: 60000 } })
   @UseGuards(AuthTokenGuard, RolesGuard)
   @Roles('DEVOTEE', 'ADMIN')
   @Post(':uuid/cover-image')

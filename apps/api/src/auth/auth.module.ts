@@ -10,6 +10,7 @@ import { AuthToken } from './auth-token.model';
 import { OtpVerification } from './otp-verification.model';
 import { MailService } from 'src/common/services/mail.service';
 import { PasswordResetToken } from './password-reset-token.model';
+import { NotificationsModule } from 'src/notifications/notifications.module';
 
 @Module({
   imports: [SequelizeModule.forFeature([
@@ -20,7 +21,7 @@ import { PasswordResetToken } from './password-reset-token.model';
     AuthToken,
     OtpVerification,
     PasswordResetToken
-  ])],
+  ]), NotificationsModule],
   controllers: [AuthController],
   providers: [AuthService, MailService],
   exports: [AuthService],

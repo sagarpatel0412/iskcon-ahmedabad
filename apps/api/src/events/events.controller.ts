@@ -29,6 +29,7 @@ import { Roles } from '../auth/decorators/roles.decorator';
 import { CreateEventFormFieldDto } from './dto/create-event-form-field.dto';
 import { RegisterEventDto } from './dto/register-event.dto';
 import { ScanEventQrDto } from './dto/scan-event-qr.dto';
+import { Throttle } from '@nestjs/throttler';
 
 @Controller('events')
 export class EventsController {
@@ -41,6 +42,7 @@ export class EventsController {
     return this.eventsService.create(dto, req.user);
   }
 
+  @Throttle({ default: { limit: 60, ttl: 60000 } })
   @Get()
   findAll(
     @Query('page') page = '1',
@@ -164,6 +166,7 @@ export class EventsController {
     return this.eventsService.eventRegistrations(uuid, req.user);
   }
 
+  @Throttle({ default: { limit: 5, ttl: 60000 } })
   @UseGuards(AuthTokenGuard, RolesGuard, VerifiedDevoteeGuard)
   @Roles('DEVOTEE', 'ADMIN')
   @Post(':uuid/poster')

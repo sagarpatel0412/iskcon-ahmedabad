@@ -24,6 +24,7 @@ import { User } from '../users/user.model';
 import { Centre } from '../centres/centre.model';
 import { Op } from 'sequelize';
 import { RefundTripPaymentDto } from './dto/refund-trip-payment.dto';
+import { NotificationsService } from 'src/notifications/notifications.service';
 
 @Injectable()
 export class TripsService {
@@ -47,6 +48,8 @@ export class TripsService {
 
     @InjectModel(TripPayment)
     private readonly paymentModel: typeof TripPayment,
+
+    private readonly notificationsService: NotificationsService,
   ) {
     this.razorpay = new Razorpay({
       key_id: process.env.RAZORPAY_KEY_ID!,
@@ -395,6 +398,21 @@ export class TripsService {
 
     await registration.update({
       payment_id: payment.id,
+    });
+
+    await this.notificationsService.sendTemplateEmail({
+      to: user.email,
+      templateKey: 'TRIP_REGISTRATION_SUCCESS',
+      variables: {
+        name: `${user.first_name} ${user.last_name || ''}`.trim(),
+        trip_title: trip.title,
+        destination: trip.destination,
+        start_date: trip.start_date,
+        end_date: trip.end_date,
+        departure_city: trip.departure_city || '-',
+        meeting_point: trip.meeting_point || '-',
+        trip_url: `${process.env.FRONTEND_URL}/trips/${trip.uuid}`,
+      },
     });
 
     return {

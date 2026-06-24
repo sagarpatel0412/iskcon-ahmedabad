@@ -16,6 +16,7 @@ import { EventAttendance } from './event-attendance.model';
 import { EventPaymentsController } from './event-payments.controller';
 import { EventPaymentsService } from './event-payments.service';
 import { Payment } from './payment.model';
+import { NotificationsModule } from 'src/notifications/notifications.module';
 
 @Module({
   imports: [
@@ -30,7 +31,8 @@ import { Payment } from './payment.model';
       EventRegistration,
       EventAttendance,
       Payment
-    ])
+    ]),
+    NotificationsModule
   ],
   controllers: [EventsController, EventPaymentsController],
   providers: [EventsService, EventPaymentsService],

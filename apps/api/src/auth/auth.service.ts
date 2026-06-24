@@ -24,6 +24,7 @@ import { OtpVerification } from './otp-verification.model';
 import { MailService } from 'src/common/services/mail.service';
 import { PasswordResetToken } from './password-reset-token.model';
 import { Op } from 'sequelize';
+import { NotificationsService } from 'src/notifications/notifications.service';
 
 const COOKIE_NAME = 'krishna_session';
 
@@ -60,6 +61,8 @@ export class AuthService {
     private readonly passwordResetTokenModel: typeof PasswordResetToken,
 
     private readonly mailService: MailService,
+
+    private readonly notificationsService: NotificationsService,
   ) {}
 
   async register(dto: RegisterDto) {
@@ -137,6 +140,17 @@ export class AuthService {
     });
 
     const { password_hash, ...safeUser } = user.get({ plain: true }) as any;
+
+    if (user.email) {
+      await this.notificationsService.sendTemplateEmail({
+        to: user.email,
+        templateKey: 'REGISTER_SUCCESS',
+        variables: {
+          name: `${user.first_name} ${user.last_name || ''}`.trim(),
+          login_url: `${process.env.FRONTEND_URL}/login`,
+        },
+      });
+    }
 
     return {
       message: 'User registered successfully',
@@ -281,7 +295,18 @@ export class AuthService {
     });
 
     if (dto.email) {
-      await this.mailService.sendOtpEmail(dto.email, otp);
+      console.log("hello")
+      const a =await this.notificationsService.sendTemplateEmail({
+        to: dto.email,
+        templateKey: 'LOGIN_OTP',
+        variables: {
+          name: dto.email.split('@')[0],
+          otp,
+          expiry_minutes: 10,
+        },
+      });
+      console.log('aaaaaaaaa',a)
+      // await this.mailService.sendOtpEmail(dto.email, otp);
     }
 
     // SMS later

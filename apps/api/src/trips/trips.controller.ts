@@ -26,11 +26,13 @@ import { extname } from 'path';
 import { diskStorage } from 'multer';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { VerifiedDevoteeGuard } from 'src/auth/guards/verified-devotee.guard';
+import { Throttle } from '@nestjs/throttler';
 
 @Controller('trips')
 export class TripsController {
   constructor(private readonly tripsService: TripsService) {}
 
+  @Throttle({ default: { limit: 60, ttl: 60000 } })
   @Get()
   findPublishedTrips(
     @Query('page') page = '1',
@@ -71,6 +73,7 @@ export class TripsController {
     return this.tripsService.registerTrip(uuid, dto, req.user);
   }
 
+  @Throttle({ default: { limit: 10, ttl: 60000 } })
   @UseGuards(AuthTokenGuard)
   @Post('verify-payment')
   verifyPayment(@Body() dto: VerifyTripPaymentDto, @Req() req: any) {
@@ -150,6 +153,7 @@ export class TripsController {
     return this.tripsService.razorpayWebhook(body, req);
   }
 
+  @Throttle({ default: { limit: 5, ttl: 60000 } })
   @UseGuards(AuthTokenGuard, RolesGuard, VerifiedDevoteeGuard)
   @Roles('DEVOTEE', 'ADMIN')
   @Post(':uuid/cover-image')

@@ -20,6 +20,7 @@ import { RegisterEventDto } from './dto/register-event.dto';
 import { EventAttendance } from './event-attendance.model';
 import { ScanEventQrDto } from './dto/scan-event-qr.dto';
 import { Op } from 'sequelize';
+import { NotificationsService } from 'src/notifications/notifications.service';
 
 @Injectable()
 export class EventsService {
@@ -38,6 +39,8 @@ export class EventsService {
 
     @InjectModel(EventAttendance)
     private readonly eventAttendanceModel: typeof EventAttendance,
+
+    private readonly notificationsService: NotificationsService,
   ) { }
 
   async create(dto: CreateEventDto, user: User) {
@@ -309,6 +312,21 @@ export class EventsService {
       status: 'registered',
       registered_at: new Date(),
     });
+
+    if(registration){
+      await this.notificationsService.sendTemplateEmail({
+        to: user.email,
+        templateKey: 'EVENT_REGISTRATION_SUCCESS',
+        variables: {
+          name: `${user.first_name} ${user.last_name || ''}`.trim(),
+          event_title: event.title,
+          event_date: event.event_date,
+          event_time: `${event.start_time || ''} - ${event.end_time || ''}`,
+          event_location: event.location || 'ISKCON Ahmedabad',
+          event_url: `${process.env.FRONTEND_URL}/events/${event.uuid}`,
+        },
+      });
+    }
 
     return {
       message: 'Event registered successfully',
