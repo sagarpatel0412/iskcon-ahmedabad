@@ -21,7 +21,7 @@ SET @@SESSION.SQL_LOG_BIN= 0;
 -- GTID state at the beginning of the backup 
 --
 
-SET @@GLOBAL.GTID_PURGED=/*!80000 '+'*/ '759228e8-4789-11f1-92b0-cf4a04380a8c:1-152166';
+SET @@GLOBAL.GTID_PURGED=/*!80000 '+'*/ '759228e8-4789-11f1-92b0-cf4a04380a8c:1-152230';
 
 --
 -- Table structure for table `auth_tokens`
@@ -50,7 +50,7 @@ CREATE TABLE `auth_tokens` (
   KEY `idx_auth_tokens_expires_at` (`expires_at`),
   KEY `idx_auth_tokens_revoked_at` (`revoked_at`),
   CONSTRAINT `fk_auth_tokens_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=85 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=89 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -807,6 +807,57 @@ CREATE TABLE `donations` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `email_logs`
+--
+
+DROP TABLE IF EXISTS `email_logs`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `email_logs` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `uuid` char(36) NOT NULL,
+  `template_key` varchar(100) DEFAULT NULL,
+  `to_email` varchar(255) NOT NULL,
+  `subject` varchar(255) NOT NULL,
+  `provider` enum('resend') DEFAULT 'resend',
+  `provider_message_id` varchar(255) DEFAULT NULL,
+  `status` enum('pending','sent','failed') DEFAULT 'pending',
+  `error_message` text,
+  `sent_at` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uuid` (`uuid`)
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `email_templates`
+--
+
+DROP TABLE IF EXISTS `email_templates`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `email_templates` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `uuid` char(36) NOT NULL,
+  `template_key` varchar(100) NOT NULL,
+  `subject` varchar(255) NOT NULL,
+  `html_body` longtext NOT NULL,
+  `text_body` text,
+  `variables_json` json DEFAULT NULL,
+  `is_active` tinyint(1) DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uuid` (`uuid`),
+  UNIQUE KEY `template_key` (`template_key`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `event_attendance`
 --
 
@@ -998,7 +1049,7 @@ CREATE TABLE `otp_verifications` (
   KEY `idx_otp_expires_at` (`expires_at`),
   KEY `idx_otp_verified_at` (`verified_at`),
   CONSTRAINT `fk_otp_verifications_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=85 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=99 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1372,6 +1423,42 @@ CREATE TABLE `progress_levels` (
   UNIQUE KEY `uuid` (`uuid`),
   UNIQUE KEY `slug` (`slug`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `promotional_banners`
+--
+
+DROP TABLE IF EXISTS `promotional_banners`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `promotional_banners` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `uuid` char(36) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `subtitle` varchar(255) DEFAULT NULL,
+  `description` text,
+  `image_url` text,
+  `button_text` varchar(100) DEFAULT NULL,
+  `redirect_url` text,
+  `banner_type` enum('event','trip','course','product','custom') DEFAULT 'custom',
+  `reference_uuid` char(36) DEFAULT NULL,
+  `display_type` enum('modal','banner','both') DEFAULT 'modal',
+  `position` enum('home','shop','events','trips','courses','all') DEFAULT 'all',
+  `start_at` datetime DEFAULT NULL,
+  `end_at` datetime DEFAULT NULL,
+  `auto_remove_at` datetime DEFAULT NULL,
+  `priority` int DEFAULT '1',
+  `is_active` tinyint(1) DEFAULT '1',
+  `created_by` int DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uuid` (`uuid`),
+  KEY `fk_promotional_banners_created_by` (`created_by`),
+  CONSTRAINT `fk_promotional_banners_created_by` FOREIGN KEY (`created_by`) REFERENCES `users` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1798,4 +1885,4 @@ SET @@SESSION.SQL_LOG_BIN = @MYSQLDUMP_TEMP_LOG_BIN;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-06-23 23:44:53
+-- Dump completed on 2026-06-25 10:29:10

@@ -97,6 +97,7 @@ import ShopPaymentSuccessPage from "./pages/shop/ShopPaymentSuccessPage";
 import ShopPaymentFailedPage from "./pages/shop/ShopPaymentFailedPage";
 import AdminShopCouponsPage from "./pages/shop/admin/AdminShopCouponsPage";
 import AdminShopReviewsPage from "./pages/shop/admin/AdminShopReviewsPage";
+import AdminPromotionalBannersPage from "./pages/promotional-banners/AdminPromotionalBannersPage";
 
 export default function App() {
   return (
@@ -209,6 +210,7 @@ export default function App() {
               <Route path="/content/manage" element={<MyContentPage />} />
               <Route path="/content/create" element={<CreateContentPage />} />
               <Route path="/content/:uuid/edit" element={<EditContentPage />} />
+              <Route path="/promotional-banners/manage" element={<AdminPromotionalBannersPage />} />
             </Route>
             <Route element={<RoleRoute allowedRoles={["DEVOTEE"]} />}>
               <Route path="/events/create" element={<CreateEventPage />} />

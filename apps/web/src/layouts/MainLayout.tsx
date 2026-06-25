@@ -49,6 +49,7 @@ import {
   TicketPercent,
   Truck,
   Warehouse,
+  Megaphone,
 } from "lucide-react";
 
 import { logout } from "../services/authService";
@@ -56,6 +57,7 @@ import useAuth from "../hooks/useAuth";
 import { PremiumBadge } from "../components/premium-badge/PremiumBadge";
 import { useState } from "react";
 import { MdMoney } from "react-icons/md";
+import PromotionalModal from "../pages/promotional-banners/PromotionalModal";
 
 export default function MainLayout() {
   return (
@@ -65,6 +67,8 @@ export default function MainLayout() {
     >
       <TopMantraBar />
       <Header />
+
+      <PromotionalModal />
 
       <main className="mx-auto min-h-screen max-w-7xl px-5 py-8">
         <Outlet />
@@ -278,91 +282,89 @@ function Header() {
   ];
 
   const shopLinks = !isLoggedIn
-  ? [
-      { to: "/shop", label: "Shop", icon: ShoppingBag },
-    ]
-  : canManage
-    ? [
-        { to: "/shop", label: "Shop", icon: ShoppingBag },
+    ? [{ to: "/shop", label: "Shop", icon: ShoppingBag }]
+    : canManage
+      ? [
+          { to: "/shop", label: "Shop", icon: ShoppingBag },
 
-        { to: "/shop/cart", label: "Cart", icon: ShoppingCart },
-        { to: "/shop/wishlist", label: "Wishlist", icon: Heart },
-        { to: "/shop/my-orders", label: "My Orders", icon: Package },
+          { to: "/shop/cart", label: "Cart", icon: ShoppingCart },
+          { to: "/shop/wishlist", label: "Wishlist", icon: Heart },
+          { to: "/shop/my-orders", label: "My Orders", icon: Package },
 
-        { to: "/shop/manage", label: "Dashboard", icon: LayoutDashboard },
+          { to: "/shop/manage", label: "Dashboard", icon: LayoutDashboard },
 
-        {
-          to: "/shop/manage/products",
-          label: "Manage Products",
-          icon: Package2,
-        },
+          {
+            to: "/shop/manage/products",
+            label: "Manage Products",
+            icon: Package2,
+          },
 
-        {
-          to: "/shop/manage/my-products",
-          label: "My Products",
-          icon: Boxes,
-        },
+          {
+            to: "/shop/manage/my-products",
+            label: "My Products",
+            icon: Boxes,
+          },
 
-        {
-          to: "/shop/manage/categories",
-          label: "Categories",
-          icon: FolderTree,
-        },
+          {
+            to: "/shop/manage/categories",
+            label: "Categories",
+            icon: FolderTree,
+          },
 
-        {
-          to: "/shop/manage/orders",
-          label: "Orders",
-          icon: ShoppingBasket,
-        },
+          {
+            to: "/shop/manage/orders",
+            label: "Orders",
+            icon: ShoppingBasket,
+          },
 
-        {
-          to: "/shop/manage/shipping",
-          label: "Shipping",
-          icon: Truck,
-        },
+          {
+            to: "/shop/manage/shipping",
+            label: "Shipping",
+            icon: Truck,
+          },
 
-        {
-          to: "/shop/manage/refunds",
-          label: "Refunds",
-          icon: RotateCcw,
-        },
+          {
+            to: "/shop/manage/refunds",
+            label: "Refunds",
+            icon: RotateCcw,
+          },
 
-        {
-          to: "/shop/manage/inventory",
-          label: "Inventory",
-          icon: Warehouse,
-        },
+          {
+            to: "/shop/manage/inventory",
+            label: "Inventory",
+            icon: Warehouse,
+          },
 
-        {
-          to: "/shop/manage/low-stock",
-          label: "Low Stock",
-          icon: AlertTriangle,
-        },
+          {
+            to: "/shop/manage/low-stock",
+            label: "Low Stock",
+            icon: AlertTriangle,
+          },
 
-        {
-          to: "/shop/manage/coupons",
-          label: "Coupons",
-          icon: TicketPercent,
-        },
+          {
+            to: "/shop/manage/coupons",
+            label: "Coupons",
+            icon: TicketPercent,
+          },
 
-        {
-          to: "/shop/manage/reviews",
-          label: "Reviews",
-          icon: Star,
-        },
+          {
+            to: "/shop/manage/reviews",
+            label: "Reviews",
+            icon: Star,
+          },
 
-        {
-          to: "/shop/manage/reports",
-          label: "Reports",
-          icon: BarChart3,
-        },
-      ]
-    : [
-        { to: "/shop", label: "Shop", icon: ShoppingBag },
-        { to: "/shop/cart", label: "Cart", icon: ShoppingCart },
-        { to: "/shop/wishlist", label: "Wishlist", icon: Heart },
-        { to: "/shop/my-orders", label: "My Orders", icon: Package },
-      ];
+          {
+            to: "/shop/manage/reports",
+            label: "Reports",
+            icon: BarChart3,
+          },
+        ]
+      : [
+          { to: "/shop", label: "Shop", icon: ShoppingBag },
+          { to: "/shop/cart", label: "Cart", icon: ShoppingCart },
+          { to: "/shop/wishlist", label: "Wishlist", icon: Heart },
+          { to: "/shop/my-orders", label: "My Orders", icon: Package },
+        ];
 
   const mainMenuLinks = [
     {
@@ -375,9 +377,23 @@ function Header() {
         },
       ],
     },
+    ...(canManage
+      ? [
+          {
+            title: "Promotions",
+            items: [
+              {
+                to: "/promotional-banners/manage",
+                label: "Promo Banners",
+                icon: Megaphone,
+              },
+            ],
+          },
+        ]
+      : []),
     {
       title: "Shop",
-      items: shopLinks
+      items: shopLinks,
     },
     {
       title: "Events",
@@ -413,10 +429,10 @@ function Header() {
           icon: ScrollText,
         },
         {
-          to:"/about/about-glory-of-krishna-and-chaitanya-mahaprabhu",
+          to: "/about/about-glory-of-krishna-and-chaitanya-mahaprabhu",
           label: "Glory of Krishna and Chaitanya Mahaprabhu",
           icon: ScrollText,
-        }
+        },
       ],
     },
     {

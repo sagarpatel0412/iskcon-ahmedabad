@@ -84,6 +84,7 @@ import { EmailTemplate } from './notifications/models/email-template.model';
 import { EmailLog } from './notifications/models/email-log.model';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler'
 import { APP_GUARD } from '@nestjs/core';
+import { PromotionalBannersModule } from './promotional-banners/promotional-banners.module';
 
 @Module({
   imports: [
@@ -192,6 +193,7 @@ import { APP_GUARD } from '@nestjs/core';
     SupportModule,
     ShopModule,
     NotificationsModule,
+    PromotionalBannersModule,
   ],
   controllers: [AppController],
   providers: [
